@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('pasien_id')->constrained('pasiens');
+
             $table->foreignId('petugas_id')->constrained('users');
             $table->foreignId('perawat_id')->nullable()->constrained('users');
 
@@ -27,9 +28,9 @@ return new class extends Migration
 
             // status alur
             $table->enum('status', [
-                'menunggu',              // setelah input petugas
-                'diproses',              // perawat ambil
-                'selesai_diperiksa',     // setelah isi rekam medis
+                'menunggu',
+                'diproses',
+                'selesai_diperiksa',
                 'menunggu_pembayaran',
                 'selesai'
             ]);
