@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('pasiens', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('pengguna_id')->constrained('pengguna');
+            $table->foreignId('pengguna_id')->constrained('users');
             $table->string('nik')->unique();
             $table->string('alamat');
             $table->string('no_hp');

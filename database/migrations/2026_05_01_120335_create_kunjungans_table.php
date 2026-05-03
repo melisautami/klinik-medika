@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('kunjungans', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('pasien_id')->constrained('pasien');
-            $table->foreignId('petugas_id')->constrained('pengguna');
-            $table->foreignId('perawat_id')->nullable()->constrained('pengguna');
+            $table->foreignId('pasien_id')->constrained('pasiens');
+            $table->foreignId('petugas_id')->constrained('users');
+            $table->foreignId('perawat_id')->nullable()->constrained('users');
 
             $table->date('tanggal_kunjungan');
 
