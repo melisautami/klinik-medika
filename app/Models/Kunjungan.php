@@ -3,15 +3,20 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Pasien;
+use App\Models\User;
+use App\Models\Pembayaran;
 
 class Kunjungan extends Model
 {
-    protected $table = 'kunjungan';
+    // gunakan nama tabel sesuai migration: 'kunjungans'
+    protected $table = 'kunjungans';
 
     protected $fillable = [
         'pasien_id',
         'petugas_id',
         'perawat_id',
+        'tipe',
         'tanggal_kunjungan',
         'keluhan',
         'diagnosa',

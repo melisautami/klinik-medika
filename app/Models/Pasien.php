@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
+use App\Models\Kunjungan;
 
 class Pasien extends Model
 {
-    protected $table = 'pasien';
+    // gunakan nama tabel sesuai migration: 'pasiens'
+    protected $table = 'pasiens';
 
     protected $fillable = [
         'pengguna_id',

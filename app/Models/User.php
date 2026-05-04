@@ -9,12 +9,14 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Pasien;
+use App\Models\Kunjungan;
 
-#[Fillable(['name', 'email', 'password','role'])]
+#[Fillable(['name', 'email', 'password', 'role'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
-     // 🔹 Relasi ke pasien (1:1)
+    // 🔹 Relasi ke pasien (1:1)
     public function pasien()
     {
         return $this->hasOne(Pasien::class, 'pengguna_id');

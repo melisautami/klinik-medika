@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tarif extends Model
 {
-    protected $table = 'tarif';
+    protected $table = 'tarifs';
 
     protected $fillable = [
         'nama_tindakan',
-        'harga'
+        'harga',
     ];
 }

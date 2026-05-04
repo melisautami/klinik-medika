@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Kunjungan;
 
 class Pembayaran extends Model
 {
-    protected $table = 'pembayaran';
+    // migration created 'pembayarans'
+    protected $table = 'pembayarans';
 
     protected $fillable = [
         'kunjungan_id',
