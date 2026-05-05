@@ -11,28 +11,46 @@
 
                 <!-- Menu Desktop -->
                 <div class="hidden sm:-my-px sm:ml-8 sm:flex sm:space-x-8">
-                    <!-- Link Aktif -->
-                    <a href="{{ route('admin.dashboard') }}"
-                        class="border-green-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors">
-                        Dashboard
-                    </a>
-                    <!-- Link Tidak Aktif -->
-                    <a href="{{ route('admin.pasien.index') }}"
-                        class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors">
-                        Manajemen Pasien
-                    </a>
-                    <a href="{{ route('admin.kunjungan.index') }}"
-                        class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors">
-                        Kunjungan Pasien
-                    </a>
-                    <a href="{"
-                        class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors">
-                        Konfirmasi & Tarif
-                    </a>
-                    <a href=""
-                        class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors">
-                        Laporan
-                    </a>
+                    @if (auth()->user()->role == 'admin')
+                        <!-- Link Aktif -->
+                        <a href="{{ route('admin.dashboard') }}"
+                            class="border-green-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors">
+                            Dashboard
+                        </a>
+                        <!-- Link Tidak Aktif -->
+                        <a href="{{ route('admin.perawat.index') }}"
+                            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors">
+                            Manajemen Perawat
+                        </a>
+                        <a href="{{ route('admin.pasien.index') }}"
+                            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors">
+                            Manajemen Pasien
+                        </a>
+                        <a href="{{ route('admin.kunjungan.index') }}"
+                            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors">
+                            Kunjungan Pasien
+                        </a>
+                        <a href="{"
+                            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors">
+                            Konfirmasi & Tarif
+                        </a>
+                        <a href=""
+                            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors">
+                            Laporan
+                        </a>
+                    @endif
+                    @if (auth()->user()->role == 'perawat')
+                        <!-- Link Aktif -->
+                        <a href="{{ route('perawat.dashboard') }}"
+                            class="border-green-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors">
+                            Dashboard
+                        </a>
+                        <!-- Link Tidak Aktif -->
+                        <a href="{{ route('perawat.kunjungan') }}"
+                            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors">
+                            lihat Pasien
+                        </a>
+                    @endif
                 </div>
             </div>
 
