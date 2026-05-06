@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Kunjungan;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Pasien extends Model
 {
+    use SoftDeletes;
     // gunakan nama tabel sesuai migration: 'pasiens'
     protected $table = 'pasiens';
 

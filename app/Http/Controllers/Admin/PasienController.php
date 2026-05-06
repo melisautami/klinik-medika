@@ -10,9 +10,24 @@ use Illuminate\Support\Facades\Hash;
 
 class PasienController extends Controller
 {
-  public function index()
+  public function index(Request $request)
   {
-    $pasiens = Pasien::orderBy('created_at', 'desc')->paginate(20);
+    // Memulai query dengan relasi pengguna
+    $query = Pasien::with('pengguna');
+
+    // Jika ada input pencarian
+    if ($request->has('search') && $request->search != '') {
+      $search = $request->search;
+
+      // Cari berdasarkan relasi nama di tabel users
+      $query->whereHas('pengguna', function ($q) use ($search) {
+        $q->where('name', 'like', '%' . $search . '%');
+      });
+    }
+
+    // Paginate data (misal 10 per halaman)
+    $pasiens = $query->paginate(10);
+
     return view('admin.pasien.index', compact('pasiens'));
   }
 
@@ -95,10 +110,6 @@ class PasienController extends Controller
   {
     $userId = $pasien->pengguna_id;
     $pasien->delete();
-    if ($userId) {
-      User::where('id', $userId)->delete();
-    }
-
     return redirect()->route('admin.pasien.index')->with('success', 'Pasien berhasil dihapus.');
   }
 }

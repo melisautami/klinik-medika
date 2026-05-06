@@ -27,7 +27,8 @@ class Kunjungan extends Model
     // 🔹 ke pasien
     public function pasien()
     {
-        return $this->belongsTo(Pasien::class, 'pasien_id');
+        // Tambahkan ->withTrashed() di sini
+        return $this->belongsTo(Pasien::class, 'pasien_id')->withTrashed();
     }
 
     // 🔹 ke petugas
