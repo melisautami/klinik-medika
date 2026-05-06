@@ -75,5 +75,14 @@ class PerawatController extends Controller
             ->with('success', 'Perawat berhasil diupdate');
     }
 
-    
+    /**
+     * Fungsi untuk memastikan bahwa user yang diakses benar-benar memiliki role 'perawat'
+     */
+    private function cekPerawat(User $user)
+    {
+        if ($user->role !== 'perawat') {
+            // Membatalkan proses dan menampilkan halaman 404 (Not Found)
+            abort(404, 'Data perawat tidak ditemukan.');
+        }
+    }
 }

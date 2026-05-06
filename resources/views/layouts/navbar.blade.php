@@ -1,85 +1,96 @@
-<nav class="bg-white border-b border-gray-200 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<nav class="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
+    <div class="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
-            <div class="flex">
+
+            <!-- Bagian Kiri: Logo & Menu -->
+            <div class="flex flex-1 overflow-hidden">
                 <!-- Logo / Brand -->
                 <div class="flex-shrink-0 flex items-center">
-                    <span class="text-xl font-bold text-black">
+                    <span class="text-xl font-black tracking-tight text-black">
                         🏥 Klinik <span class="text-green-600">Medika</span>
                     </span>
                 </div>
 
                 <!-- Menu Desktop -->
-                <div class="hidden sm:-my-px sm:ml-8 sm:flex sm:space-x-8">
+                <!-- Perbaikan: gap diperkecil, tambah overflow-x-auto agar aman di layar nanggung -->
+                <div class="hidden sm:ml-8 sm:flex sm:space-x-4 lg:space-x-6 overflow-x-auto no-scrollbar">
 
                     @if (auth()->user()->role == 'admin')
-                        <!-- Link Aktif -->
+                        <!-- Dashboard -->
                         <a href="{{ route('admin.dashboard') }}"
-                            class="border-green-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors">
+                            class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold whitespace-nowrap transition-colors {{ request()->routeIs('admin.dashboard') ? 'border-green-500 text-green-700' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-800' }}">
                             Dashboard
                         </a>
-                        <!-- Link Tidak Aktif -->
+
+                        <!-- Manajemen Perawat -->
                         <a href="{{ route('admin.perawat.index') }}"
-                            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors">
+                            class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold whitespace-nowrap transition-colors {{ request()->routeIs('admin.perawat.*') ? 'border-green-500 text-green-700' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-800' }}">
                             Manajemen Perawat
                         </a>
+
+                        <!-- Manajemen Pasien -->
                         <a href="{{ route('admin.pasien.index') }}"
-                            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors">
+                            class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold whitespace-nowrap transition-colors {{ request()->routeIs('admin.pasien.*') ? 'border-green-500 text-green-700' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-800' }}">
                             Manajemen Pasien
                         </a>
+
+                        <!-- Kunjungan Pasien -->
                         <a href="{{ route('admin.kunjungan.index') }}"
-                            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors">
+                            class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold whitespace-nowrap transition-colors {{ request()->routeIs('admin.kunjungan.*') ? 'border-green-500 text-green-700' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-800' }}">
                             Kunjungan Pasien
                         </a>
-                        <a href="{"
-                            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors">
+
+                        <!-- Konfirmasi & Tarif -->
+                        <a href="{{ route('admin.pembayaran.index') }}"
+                            class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold whitespace-nowrap transition-colors border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-800">
                             Konfirmasi & Tarif
                         </a>
-                        <a href=""
-                            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors">
+
+                        <!-- Laporan -->
+                        <a href="{{ route('admin.laporan.index') }}"
+                            class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold whitespace-nowrap transition-colors {{ request()->routeIs('admin.laporan.*') ? 'border-green-500 text-green-700' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-800' }}">
                             Laporan
                         </a>
                     @endif
+
                     @if (auth()->user()->role == 'perawat')
-                        <!-- Link Aktif -->
                         <a href="{{ route('perawat.dashboard') }}"
-                            class="border-green-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors">
+                            class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold whitespace-nowrap transition-colors {{ request()->routeIs('perawat.dashboard') ? 'border-green-500 text-green-700' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-800' }}">
                             Dashboard
                         </a>
-                        <!-- Link Tidak Aktif -->
                         <a href="{{ route('perawat.kunjungan') }}"
-                            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors">
-                            lihat Pasien
+                            class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold whitespace-nowrap transition-colors {{ request()->routeIs('perawat.kunjungan.*') ? 'border-green-500 text-green-700' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-800' }}">
+                            Lihat Pasien
                         </a>
                     @endif
+
                 </div>
             </div>
 
-            <!-- Profil User Desktop -->
-            <div class="hidden sm:ml-6 sm:flex sm:items-center">
-                <span class="text-sm text-gray-700 mr-4">Halo, <strong>Admin Petugas</strong></span>
-                <form method="POST" action="{{ route('logout') }}">
+            <!-- Bagian Kanan: Profil User Desktop -->
+            <div class="hidden sm:ml-6 sm:flex sm:items-center flex-shrink-0">
+
+                <form method="POST" action="{{ route('logout') }}" class="m-0">
                     @csrf
+                    <!-- Ubah ke hitam (bg-black) agar sesuai tema -->
                     <button type="submit"
-                        class="bg-red-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
+                        class="bg-black text-white text-sm font-semibold px-5 py-2 rounded-lg hover:bg-gray-800 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900">
                         Logout
                     </button>
                 </form>
             </div>
 
             <!-- Tombol Hamburger Mobile -->
-            <div class="-mr-2 flex items-center sm:hidden">
+            <div class="-mr-2 flex items-center sm:hidden flex-shrink-0">
                 <button type="button" id="mobile-menu-button"
-                    class="bg-white inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                    class="bg-gray-50 inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-green-600 hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors"
                     aria-controls="mobile-menu" aria-expanded="false">
                     <span class="sr-only">Buka menu utama</span>
-                    <!-- Icon Menu (Garis Tiga) -->
                     <svg class="block h-6 w-6" id="icon-menu" xmlns="http://www.w3.org/2000/svg" fill="none"
                         viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
-                    <!-- Icon Close (Silang) - Disembunyikan secara default -->
                     <svg class="hidden h-6 w-6" id="icon-close" xmlns="http://www.w3.org/2000/svg" fill="none"
                         viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -91,42 +102,49 @@
     </div>
 
     <!-- Menu Mobile -->
-    <div class="hidden sm:hidden" id="mobile-menu">
+    <div class="hidden sm:hidden border-t border-gray-200" id="mobile-menu">
         <div class="pt-2 pb-3 space-y-1">
-            <!-- Link Aktif Mobile -->
-            <a href="{{ route('admin.dashboard') }}"
-                class="bg-green-50 border-green-500 text-green-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Dashboard</a>
-            <!-- Link Tidak Aktif Mobile -->
-            <a href="{{ route('admin.pasien.index') }}"
-                class="border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-medium transition-colors">Manajemen
-                Pasien</a>
-            <a href=""
-                class="border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-medium transition-colors">Konfirmasi
-                & Tarif</a>
-            <a href=""
-                class="border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-medium transition-colors">Laporan</a>
+            @if (auth()->user()->role == 'admin')
+                <a href="{{ route('admin.dashboard') }}"
+                    class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium {{ request()->routeIs('admin.dashboard') ? 'bg-green-50 border-green-500 text-green-700' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800' }}">Dashboard</a>
+                <a href="{{ route('admin.perawat.index') }}"
+                    class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium {{ request()->routeIs('admin.perawat.*') ? 'bg-green-50 border-green-500 text-green-700' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800' }}">Manajemen
+                    Perawat</a>
+                <a href="{{ route('admin.pasien.index') }}"
+                    class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium {{ request()->routeIs('admin.pasien.*') ? 'bg-green-50 border-green-500 text-green-700' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800' }}">Manajemen
+                    Pasien</a>
+                <a href="{{ route('admin.kunjungan.index') }}"
+                    class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium {{ request()->routeIs('admin.kunjungan.*') ? 'bg-green-50 border-green-500 text-green-700' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800' }}">Kunjungan
+                    Pasien</a>
+                <a href=""
+                    class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800">Konfirmasi
+                    & Tarif</a>
+                <a href="{{ route('admin.laporan.index') }}"
+                    class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium {{ request()->routeIs('admin.laporan.*') ? 'bg-green-50 border-green-500 text-green-700' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800' }}">Laporan</a>
+            @endif
         </div>
 
         <!-- Profil User Mobile -->
-        <div class="pt-4 pb-3 border-t border-gray-200">
+        <div class="pt-4 pb-4 border-t border-gray-200 bg-gray-50">
             <div class="flex items-center px-4">
                 <div class="flex-shrink-0">
                     <div
-                        class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold">
-                        A
+                        class="h-10 w-10 rounded-full bg-green-200 flex items-center justify-center text-green-800 font-black text-lg shadow-sm">
+                        {{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}
                     </div>
                 </div>
                 <div class="ml-3">
-                    <div class="text-base font-medium text-gray-800">Admin Petugas</div>
-                    <div class="text-sm font-medium text-gray-500">admin@klinik.com</div>
+                    <div class="text-base font-bold text-gray-800">{{ auth()->user()->name ?? 'Admin Petugas' }}</div>
+                    <div class="text-sm font-medium text-gray-500">{{ auth()->user()->email ?? 'admin@klinik.com' }}
+                    </div>
                 </div>
             </div>
-            <div class="mt-3 space-y-1">
+            <div class="mt-4 space-y-1 px-2">
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit"
-                        class="block w-full text-left px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100 transition-colors">
-                        Logout
+                        class="block w-full text-center px-4 py-2.5 text-base font-bold text-white bg-black hover:bg-gray-800 rounded-lg shadow-sm transition-colors">
+                        Logout Keluar
                     </button>
                 </form>
             </div>
@@ -147,7 +165,6 @@
             iconMenu.classList.toggle('hidden');
             iconClose.classList.toggle('hidden');
 
-            // Ubah atribut aria-expanded untuk aksesibilitas
             const isExpanded = btn.getAttribute('aria-expanded') === 'true';
             btn.setAttribute('aria-expanded', !isExpanded);
         });

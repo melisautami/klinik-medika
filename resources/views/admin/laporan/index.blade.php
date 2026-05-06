@@ -63,16 +63,16 @@
             </div>
 
             <!-- Card 3 & 4: Pemisahan Layanan -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col justify-center bg-green-50">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col justify-center border-b-4 border-b-black bg-green-50">
                 <h3 class="text-sm font-bold text-gray-700 uppercase tracking-wider mb-1">Pasien Rawat Jalan</h3>
                 <div class="flex items-end justify-between mt-2">
-                    <span class="text-2xl font-bold text-black">{{ $rawatJalan ?? 0 }}</span>
+                    <span class="text-2xl font-bold text-green-600">{{ $rawatJalan ?? 0 }}</span>
                     <span class="text-sm font-semibold text-green-700">Rp
                         {{ number_format($pendapatanJalan ?? 0, 0, ',', '.') }}</span>
                 </div>
             </div>
 
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col justify-center bg-gray-50">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col justify-center border-b-4 border-b-green-500 bg-gray-50">
                 <h3 class="text-sm font-bold text-gray-700 uppercase tracking-wider mb-1">Pasien Rawat Inap</h3>
                 <div class="flex items-end justify-between mt-2">
                     <span class="text-2xl font-bold text-black">{{ $rawatInap ?? 0 }}</span>
