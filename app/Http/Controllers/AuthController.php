@@ -25,10 +25,10 @@ class AuthController extends Controller
 
             if ($user->role === 'admin') {
                 return redirect()->route('admin.dashboard')->with('success', 'selamat datang di dashboard admin');
-            } elseif ($user->role === 'pembimbing') {
-                return redirect()->route('pembimbing.dashboard')->with('success', 'selamat datang di dashboard pembimbbing');
-            } elseif ($user->role === 'siswa') {
-                return redirect()->route('siswa.dashboard')->with('success', 'selamat datang di dashboard siswa');
+            } elseif ($user->role === 'perawat') {
+                return redirect()->route('perawat.dashboard')->with('success', 'selamat datang di dashboard perawat');
+            } elseif ($user->role === 'pasien') {
+                return redirect()->route('pasien.dashboard')->with('success', 'selamat datang di dashboard pasien');
             } else {
                 Auth::logout();
                 return redirect()->route('login')->withErrors('role pengguna tidak dienali');

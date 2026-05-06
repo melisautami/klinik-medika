@@ -6,6 +6,8 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\PemeriksaanController;
 use App\Http\Controllers\Admin\KonfirmasiController;
 use App\Http\Controllers\Admin\PasienController;
+use App\Http\Controllers\Admin\PerawatController;
+use App\Http\Controllers\Perawat\PendatangController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -28,6 +30,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     // Manajemen pasien (CRUD)
     Route::resource('pasien', PasienController::class);
 
+    //crud perawat
+    Route::resource('perawat', PerawatController::class);
+
     // Ajukan pemeriksaan
     Route::get('pemeriksaan/create', [PemeriksaanController::class, 'create'])->name('pemeriksaan.create');
     Route::post('pemeriksaan/ajukan', [PemeriksaanController::class, 'ajukan'])->name('pemeriksaan.ajukan');
@@ -46,4 +51,18 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
 
     // Laporan
     Route::get('laporan', [App\Http\Controllers\Admin\LaporanController::class, 'index'])->name('laporan.index');
+});
+//prefik untuk perawat routes
+Route::prefix('perawat')->name('perawat.')->middleware(['auth', 'role:perawat'])->group(function () {
+    //Dashboard
+    Route::get('dashboard', [DashboardController::class, 'masuk'])->name('dashboard');
+
+    //lihat pasien pendatang
+    Route::get('/kunjungan', [PendatangController::class, 'index'])->name('kunjungan');
+
+    Route::post('/kunjungan/{kunjungan}/ambil', [PendatangController::class, 'ambil'])->name('ambil');
+
+    Route::get('/kunjungan/{kunjungan}', [PendatangController::class, 'show'])->name('show');
+
+    Route::post('/kunjungan/{kunjungan}/rekam-medis', [PendatangController::class, 'rekamMedis'])->name('rekam');
 });
