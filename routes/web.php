@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\KonfirmasiController;
 use App\Http\Controllers\Admin\PasienController;
 use App\Http\Controllers\Admin\PerawatController;
 use App\Http\Controllers\Perawat\PendatangController;
+use App\Http\Controllers\Pasien\BiodataController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -65,4 +66,23 @@ Route::prefix('perawat')->name('perawat.')->middleware(['auth', 'role:perawat'])
     Route::get('/kunjungan/{kunjungan}', [PendatangController::class, 'show'])->name('show');
 
     Route::post('/kunjungan/{kunjungan}/rekam-medis', [PendatangController::class, 'rekamMedis'])->name('rekam');
+
+    // Riwayat pemeriksaan
+    Route::get('/riwayat', [PendatangController::class, 'riwayat'])->name('riwayat');
+
+    Route::get('/kunjungan/{kunjungan}/detail', [PendatangController::class, 'detail'])->name('detail');
+});
+
+
+// prefix untuk pasien routes
+Route::prefix('pasien')
+    ->name('pasien.')
+    ->middleware(['auth', 'role:pasien'])
+    ->group(function () {
+
+        Route::get('/dashboard', [DashboardController::class, 'masuk'])
+            ->name('dashboard');
+
+        Route::get('/kunjungan/{kunjungan}/detail', [BiodataController::class, 'detailPasien'])
+    ->name('detail');
 });
