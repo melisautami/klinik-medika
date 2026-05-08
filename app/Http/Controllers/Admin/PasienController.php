@@ -57,7 +57,7 @@ class PasienController extends Controller
     $user = User::create([
       'name' => $data['name'],
       'email' => $data['email'],
-      'password' => Hash::make('secret'),
+      'password' => Hash::make('klinik'),
       'role' => 'pasien',
     ]);
 

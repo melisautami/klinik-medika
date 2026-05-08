@@ -74,7 +74,7 @@
                             </td>
 
                             <td class="py-4 px-6 text-sm">
-                                {{ optional($p->tanggal_lahir)->format('d/m/Y') ?? '-' }}
+                                {{ $p->tanggal_lahir ? \Carbon\Carbon::parse($p->tanggal_lahir)->format('d/m/Y') : '-' }}
                             </td>
                             <td class="py-4 px-6 text-center">
                                 <a href="{{ route('admin.pasien.show', $p->id) }}"

@@ -19,13 +19,14 @@
 
         <!-- Alert -->
         @if (session('success'))
-            <div class="mb-5 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-green-700 shadow-sm">
+            <div
+                class="mb-5 rounded-2xl border border-green-200 bg-gradient-to-r from-green-50 to-emerald-50 px-4 py-3 text-green-700 shadow-sm">
                 {{ session('success') }}
             </div>
         @endif
 
         <!-- Filter -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 mb-6">
+        <div class="bg-white/90 backdrop-blur rounded-3xl shadow-lg border border-gray-100 p-6 mb-6">
 
             <form method="GET" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
 
@@ -37,7 +38,7 @@
 
                     <input type="text" name="search" value="{{ request('search') }}"
                         placeholder="Masukkan nama pasien..."
-                        class="w-full rounded-xl border-gray-300 border p-3 text-sm focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none bg-gray-50 focus:bg-white transition-colors">
+                        class="w-full rounded-2xl border-gray-200 border p-3 text-sm focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none bg-gray-50 focus:bg-white transition-all duration-200 shadow-sm">
                 </div>
 
                 <!-- From -->
@@ -47,7 +48,7 @@
                     </label>
 
                     <input type="date" name="from" value="{{ request('from') }}"
-                        class="w-full rounded-xl border-gray-300 border p-3 text-sm focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none bg-gray-50 focus:bg-white transition-colors">
+                        class="w-full rounded-2xl border-gray-200 border p-3 text-sm focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none bg-gray-50 focus:bg-white transition-all duration-200 shadow-sm">
                 </div>
 
                 <!-- To -->
@@ -57,20 +58,20 @@
                     </label>
 
                     <input type="date" name="to" value="{{ request('to') }}"
-                        class="w-full rounded-xl border-gray-300 border p-3 text-sm focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none bg-gray-50 focus:bg-white transition-colors">
+                        class="w-full rounded-2xl border-gray-200 border p-3 text-sm focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none bg-gray-50 focus:bg-white transition-all duration-200 shadow-sm">
                 </div>
 
                 <!-- Buttons -->
                 <div class="md:col-span-3 flex gap-3">
 
                     <button type="submit"
-                        class="bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-xl font-semibold shadow-sm transition duration-200">
+                        class="bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-700 hover:to-emerald-600 text-white px-5 py-3 rounded-2xl font-semibold shadow-md hover:shadow-lg transition-all duration-200">
 
                         Terapkan Filter
                     </button>
 
                     <a href="{{ route('perawat.riwayat') }}"
-                        class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-5 py-3 rounded-xl font-semibold transition duration-200">
+                        class="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-5 py-3 rounded-2xl font-semibold transition-all duration-200 shadow-sm">
 
                         Reset
                     </a>
@@ -80,7 +81,7 @@
         </div>
 
         <!-- Table -->
-        <div class="bg-white rounded-2xl shadow-lg overflow-hidden border-t-4 border-green-500">
+        <div class="bg-white/90 backdrop-blur rounded-3xl shadow-xl overflow-hidden border border-gray-100">
 
             <div class="overflow-x-auto">
 
@@ -88,7 +89,7 @@
 
                     <!-- Head -->
                     <thead>
-                        <tr class="bg-green-600 text-white">
+                        <tr class="bg-gradient-to-r from-green-600 to-emerald-500 text-white">
 
                             <th class="py-4 px-6 font-semibold text-sm uppercase tracking-wider">
                                 #
@@ -129,7 +130,8 @@
                     <tbody class="bg-white text-gray-700">
 
                         @forelse ($kunjungans as $k)
-                            <tr class="border-b border-gray-200 hover:bg-gray-50 transition duration-150 ease-in-out group">
+                            <tr
+                                class="border-b border-gray-100 hover:bg-green-50/60 transition-all duration-200 ease-in-out group">
 
                                 <!-- Number -->
                                 <td class="py-4 px-6 text-sm">
@@ -149,7 +151,7 @@
 
                                 <!-- Date -->
                                 <td class="py-4 px-6 text-sm">
-                                    {{ $k->created_at->format('d M Y') }}
+                                    {{ \Carbon\Carbon::parse($k->created_at)->translatedFormat('d F Y') }}
                                 </td>
 
                                 <!-- Diagnosa -->
@@ -204,7 +206,7 @@
 
                                     @if (in_array($k->status, ['selesai', 'selesai_diperiksa', 'menunggu_pembayaran']))
                                         <a href="{{ route('perawat.detail', $k->id) }}"
-                                            class="inline-flex items-center rounded-lg bg-green-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-green-700">
+                                            class="inline-flex items-center rounded-xl bg-gradient-to-r from-green-600 to-emerald-500 px-4 py-2 text-xs font-semibold text-white shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200">
 
                                             Lihat Detail
                                         </a>
@@ -234,7 +236,7 @@
 
             <!-- Pagination -->
             @if ($kunjungans->hasPages())
-                <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                <div class="px-6 py-4 bg-gray-50 border-t border-gray-100">
                     {{ $kunjungans->links() }}
                 </div>
             @endif
