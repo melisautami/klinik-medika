@@ -1,38 +1,143 @@
 @extends('layouts.app')
 
-@section('title', 'Buat Pembayaran')
+@section('title', 'Buat Tagihan Pembayaran')
 
 @section('content')
-    <div class="container mx-auto p-6">
-        <h2 class="text-2xl font-bold mb-4">Buat Pembayaran untuk Kunjungan</h2>
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-        <div class="bg-white rounded shadow p-6 max-w-2xl">
-            <p><strong>Pasien:</strong> {{ $kunjungan->pasien->pengguna->name ?? '-' }}</p>
-            <p><strong>Tanggal:</strong> {{ $kunjungan->tanggal_kunjungan }}</p>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900">Buat Tagihan Pembayaran</h2>
+                <p class="text-sm text-gray-500 mt-1">Pilih rincian tindakan medis dan layanan yang telah diberikan.</p>
+            </div>
+            <a href="{{ route('admin.kunjungan.show', $kunjungan->id) }}"
+                class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 hover:text-green-600 transition-colors shadow-sm text-sm whitespace-nowrap">
+                &larr; Kembali
+            </a>
+        </div>
 
-            <form action="{{ route('admin.pembayaran.store', $kunjungan->id) }}" method="POST">
+        <div class="bg-white rounded-xl shadow-lg border-t-4 border-green-500 overflow-hidden">
+
+            <div class="bg-gray-50 p-6 border-b border-gray-100 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Nama Pasien</p>
+                    <p class="text-lg font-black text-gray-900">{{ $kunjungan->pasien->pengguna->name ?? '-' }}</p>
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Tanggal Pemeriksaan</p>
+                    <p class="text-lg font-black text-gray-900">
+                        {{ \Carbon\Carbon::parse($kunjungan->tanggal_kunjungan)->format('d M Y') }}</p>
+                </div>
+            </div>
+
+            <div class="p-6 border-b border-gray-100 bg-white">
+                <h3 class="text-sm font-bold text-gray-900 mb-3 border-b border-gray-100 pb-2">Catatan Pemeriksaan Perawat
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Keluhan</p>
+                        <p class="text-sm text-gray-800 whitespace-pre-wrap">
+                            {{ $kunjungan->keluhan ?? 'Tidak ada catatan keluhan.' }}</p>
+                    </div>
+
+                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Diagnosa</p>
+                        <p class="text-sm text-gray-800 whitespace-pre-wrap">
+                            {{ $kunjungan->diagnosa ?? 'Tidak ada catatan diagnosa.' }}</p>
+                    </div>
+
+                    <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                        <p class="text-xs font-bold text-blue-800 uppercase tracking-wider mb-2">Tindakan / Terapi</p>
+                        <p class="text-sm font-semibold text-blue-900 whitespace-pre-wrap">
+                            {{ $kunjungan->tindakan ?? 'Tidak ada catatan tindakan.' }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <form action="{{ route('admin.pembayaran.store', $kunjungan->id) }}" method="POST" class="p-6 bg-gray-50">
                 @csrf
 
-                <div class="mt-4">
-                    <label class="block text-sm font-medium">Pilih Rincian Tarif</label>
-                    @foreach ($tarifs as $t)
-                        <div class="flex items-center mt-2">
-                            <input type="checkbox" name="tarif_ids[]" value="{{ $t->id }}"
-                                id="tarif_{{ $t->id }}" class="mr-2">
-                            <label for="tarif_{{ $t->id }}">{{ $t->nama_tindakan }} — Rp
-                                {{ number_format($t->harga, 0, ',', '.') }}</label>
+                <h3 class="text-lg font-bold text-gray-900 mb-4">Pilih Rincian Tarif / Tindakan</h3>
+
+                @error('tarif_ids')
+                    <div class="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm font-semibold">
+                        ⚠️ {{ $message }}
+                    </div>
+                @enderror
+
+                <div class="space-y-3 mb-8">
+                    @forelse ($tarifs as $t)
+                        <label for="tarif_{{ $t->id }}"
+                            class="flex items-center justify-between p-4 bg-white border-2 border-gray-200 rounded-xl cursor-pointer hover:bg-green-50 hover:border-green-300 transition-all group shadow-sm">
+                            <div class="flex items-center gap-4">
+                                <input type="checkbox" name="tarif_ids[]" value="{{ $t->id }}"
+                                    id="tarif_{{ $t->id }}" data-harga="{{ $t->harga }}"
+                                    class="tarif-checkbox h-5 w-5 text-green-600 focus:ring-green-500 border-gray-300 rounded cursor-pointer transition-colors">
+
+                                <span class="font-bold text-gray-800 group-hover:text-green-800 transition-colors">
+                                    {{ $t->nama_tindakan }}
+                                </span>
+                            </div>
+
+                            <span class="font-black text-gray-900">
+                                Rp {{ number_format($t->harga, 0, ',', '.') }}
+                            </span>
+                        </label>
+                    @empty
+                        <div class="p-6 text-center border-2 border-dashed border-gray-300 rounded-xl bg-white">
+                            <p class="text-gray-500 font-medium">Data tarif/tindakan medis belum tersedia di sistem.</p>
                         </div>
-                    @endforeach
-                    @error('tarif_ids')
-                        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-                    @enderror
+                    @endforelse
                 </div>
 
-                <div class="mt-6 flex justify-between items-center">
-                    <a href="{{ route('admin.kunjungan.show', $kunjungan->id) }}" class="text-gray-600">Batal</a>
-                    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Buat Pembayaran</button>
+                <div class="pt-5 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-6">
+
+                    <div
+                        class="w-full sm:w-auto bg-green-100 border border-green-300 px-5 py-3 rounded-xl flex items-center justify-between gap-4 shadow-sm">
+                        <span class="text-sm font-bold text-green-800">Estimasi Total:</span>
+                        <span class="text-xl font-black text-green-700" id="estimasi_total">Rp 0</span>
+                    </div>
+
+                    <div class="flex w-full sm:w-auto gap-3">
+                        <a href="{{ route('admin.kunjungan.show', $kunjungan->id) }}"
+                            class="flex-1 sm:flex-none text-center bg-white border border-gray-300 text-gray-700 px-6 py-3 rounded-xl font-semibold hover:bg-gray-50 transition text-sm shadow-sm">
+                            Batal
+                        </a>
+                        <button type="submit"
+                            class="flex-1 sm:flex-none text-center bg-black hover:bg-gray-800 text-white px-8 py-3 rounded-xl font-bold shadow-sm transition text-sm">
+                            Terbitkan Tagihan
+                        </button>
+                    </div>
+
                 </div>
             </form>
+
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkboxes = document.querySelectorAll('.tarif-checkbox');
+            const displayTotal = document.getElementById('estimasi_total');
+
+            function hitungTotal() {
+                let total = 0;
+                checkboxes.forEach(function(checkbox) {
+                    if (checkbox.checked) {
+                        // Ambil nilai data-harga dari atribut HTML
+                        total += parseInt(checkbox.getAttribute('data-harga'));
+                    }
+                });
+
+                // Format ke format Rupiah (Contoh: Rp 150.000)
+                displayTotal.innerText = 'Rp ' + total.toLocaleString('id-ID');
+            }
+
+            // Pasang event listener ke setiap checkbox
+            checkboxes.forEach(function(checkbox) {
+                checkbox.addEventListener('change', hitungTotal);
+            });
+        });
+    </script>
 @endsection

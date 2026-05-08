@@ -167,6 +167,16 @@
 
                 </div>
 
+                <div class="sm:col-span-1">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Keluhan Awal (Opsional)</label>
+                    <textarea name="keluhan" rows="3" placeholder="Contoh: Pusing, demam, atau batuk..."
+                        class="w-full rounded-lg border-gray-300 border p-3 text-sm focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none transition-shadow bg-gray-50 focus:bg-white">{{ old('keluhan') }}</textarea>
+                    <p class="text-xs text-gray-500 mt-1">Keluhan singkat ini akan dibaca oleh perawat.</p>
+                    @error('keluhan')
+                        <p class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 <!-- Area Tombol Aksi -->
                 <div class="mt-8 pt-5 border-t border-gray-200 flex items-center justify-end gap-3">
                     <a href="{{ route('admin.dashboard') }}"

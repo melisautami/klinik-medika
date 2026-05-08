@@ -19,87 +19,86 @@ class AuthController extends Controller
     /**
      * Proses login
      */
+    /**
+     * Proses login
+     */
     public function login(Request $request)
     {
-        /**
-         * Jika login pasien menggunakan NIK
-         */
-        if ($request->filled('nik')) {
+        // Validasi input awal
+        $request->validate([
+            'login_id' => ['required'],
+            'password' => ['required'],
+        ]);
 
-            $request->validate([
-                'nik' => ['required'],
-                'password' => ['required'],
-            ]);
+        $loginId = $request->login_id;
+        $password = $request->password;
+
+        /**
+         * SKENARIO 1: Jika input hanya berisi ANGKA (Dianggap sebagai NIK Pasien)
+         */
+        if (is_numeric($loginId)) {
 
             // cari pasien berdasarkan NIK
-            $pasien = Pasien::with('pengguna')->where('nik', $request->nik)->first();
+            $pasien = Pasien::with('pengguna')->where('nik', $loginId)->first();
 
-            // jika pasien tidak ditemukan
             if (!$pasien) {
                 return back()->withErrors([
-                    'nik' => 'NIK tidak ditemukan'
-                ])->onlyInput('nik');
+                    'login_id' => 'NIK tidak terdaftar di sistem kami.'
+                ])->onlyInput('login_id');
             }
 
-            // pastikan pasien punya akun user
             if (!$pasien->pengguna) {
                 return back()->withErrors([
-                    'nik' => 'Akun pasien tidak tersedia'
-                ]);
+                    'login_id' => 'Akun pasien belum diaktifkan.'
+                ])->onlyInput('login_id');
             }
 
-            // login menggunakan akun user pasien
+            // Login menggunakan email milik relasi pasien tersebut
             $login = Auth::attempt([
                 'email' => $pasien->pengguna->email,
-                'password' => $request->password,
+                'password' => $password,
                 'role' => 'pasien'
             ]);
 
             if (!$login) {
                 return back()->withErrors([
-                    'password' => 'Password salah'
-                ])->onlyInput('nik');
+                    'password' => 'Kata sandi yang Anda masukkan salah.'
+                ])->onlyInput('login_id');
             }
         }
 
         /**
-         * Login admin / perawat menggunakan email
+         * SKENARIO 2: Jika input bukan angka murni (Dianggap sebagai Email Admin/Perawat)
          */
         else {
 
-            $credentials = $request->validate([
-                'email' => ['required', 'email'],
-                'password' => ['required'],
+            // Coba login sebagai Admin/Perawat
+            $login = Auth::attempt([
+                'email' => $loginId,
+                'password' => $password
             ]);
-
-            $login = Auth::attempt($credentials);
 
             if (!$login) {
                 return back()->withErrors([
-                    'email' => 'Email atau password salah'
-                ])->onlyInput('email');
+                    'login_id' => 'Email atau kata sandi yang Anda masukkan salah.'
+                ])->onlyInput('login_id');
             }
         }
 
         /**
-         * Session regenerate
+         * Session regenerate & Redirect (BERLAKU UNTUK KEDUANYA)
          */
         $request->session()->regenerate();
-
         $user = Auth::user();
 
-        /**
-         * Redirect berdasarkan role
-         */
         if ($user->role === 'admin') {
             return redirect()->route('admin.dashboard')->with('success', 'Selamat datang di dashboard admin');
         } elseif ($user->role === 'perawat') {
             return redirect()->route('perawat.dashboard')->with('success', 'Selamat datang di dashboard perawat');
         } elseif ($user->role === 'pasien') {
-            return redirect()->route('pasien.dashboard')->with('success', 'Selamat datang di dashboard pasien');
+            return redirect()->route('pasien.dashboard')->with('success', 'Selamat datang di portal pasien');
         } else {
             Auth::logout();
-
             return redirect()->route('login')->withErrors('Role pengguna tidak dikenali');
         }
     }

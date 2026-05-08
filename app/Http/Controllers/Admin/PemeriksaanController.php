@@ -17,24 +17,28 @@ class PemeriksaanController extends Controller
 
     return view('admin.pemeriksaan.create', compact('pasiens', 'perawats'));
   }
+
   // Ajukan pemeriksaan: buat kunjungan baru dan assign ke perawat (placeholder)
   public function ajukan(Request $request)
   {
     $request->validate([
-      'pasien_id' => 'required|exists:pasiens,id',
+      'pasien_id'  => 'required|exists:pasiens,id',
+      'tipe'       => 'required|in:rawat_jalan,rawat_inap',
       'perawat_id' => 'nullable|exists:users,id',
-      'tipe' => 'required|string',
+      'keluhan'    => 'nullable|string'
     ]);
 
-    $kunjungan = Kunjungan::create([
-      'pasien_id' => $request->pasien_id,
-      'petugas_id' => auth()->id(),
-      'perawat_id' => $request->perawat_id,
-      'tanggal_kunjungan' => now()->toDateString(),
-      'tipe' => $request->tipe,
-      'status' => 'menunggu',
+    // Simpan ke tabel kunjungans
+    Kunjungan::create([
+      'pasien_id'         => $request->pasien_id,
+      'tipe'              => $request->tipe,
+      'perawat_id'        => $request->perawat_id,
+      'petugas_id'        => auth()->id(), // <-- INI YANG KETINGGALAN
+      'keluhan'           => $request->keluhan,
+      'tanggal_kunjungan' => now()->format('Y-m-d'),
+      'status'            => 'menunggu'
     ]);
 
-    return redirect()->back()->with('success', 'Pemeriksaan diajukan.');
+    return redirect()->route('admin.dashboard')->with('success', 'Pasien berhasil masuk ke antrean pemeriksaan.');
   }
 }

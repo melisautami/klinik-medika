@@ -12,8 +12,10 @@ class PasienController extends Controller
 {
   public function index(Request $request)
   {
-    // Memulai query dengan relasi pengguna
-    $query = Pasien::with('pengguna');
+    // Memulai query dengan relasi pengguna, dan KUNCI HANYA UNTUK ROLE 'pasien'
+    $query = Pasien::with('pengguna')->whereHas('pengguna', function ($q) {
+      $q->where('role', 'pasien');
+    });
 
     // Jika ada input pencarian
     if ($request->has('search') && $request->search != '') {
@@ -25,8 +27,8 @@ class PasienController extends Controller
       });
     }
 
-    // Paginate data (misal 10 per halaman)
-    $pasiens = $query->paginate(10);
+    // Mengambil data dengan pagination (misal 10 data per halaman) dan urutan terbaru
+    $pasiens = $query->latest()->paginate(10);
 
     return view('admin.pasien.index', compact('pasiens'));
   }

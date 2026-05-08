@@ -65,10 +65,16 @@
                         </dd>
                     </div>
 
-                    <!-- Block Alamat (Mengambil 2 kolom penuh di layar besar) -->
-                    <div class="bg-gray-50 px-5 py-4 rounded-lg border border-gray-100 sm:col-span-2">
+                    <div class="bg-gray-50 px-5 py-4 rounded-lg border border-gray-100">
                         <dt class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Alamat Domisili</dt>
                         <dd class="text-base font-medium text-gray-900">{{ $pasien->alamat ?? '-' }}</dd>
+                    </div>
+
+                    <div class="bg-gray-50 px-5 py-4 rounded-lg border border-gray-100">
+                        <dt class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Keluhan Terakhir</dt>
+                        <dd class="text-base font-medium text-gray-900">
+                            {{ $pasien->kunjungan->sortByDesc('created_at')->first()->keluhan ?? 'Belum ada data kunjungan/keluhan' }}
+                        </dd>
                     </div>
                 </dl>
             </div>

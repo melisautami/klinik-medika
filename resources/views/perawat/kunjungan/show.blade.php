@@ -120,60 +120,63 @@
 
             <!-- Form -->
             <form action="{{ route('perawat.rekam', $kunjungan) }}" method="POST" class="p-6">
-
                 @csrf
 
-                <!-- Diagnosa -->
                 <div class="mb-6">
+                    <div class="flex justify-between items-end mb-2">
+                        <label class="block text-sm font-semibold text-gray-700">
+                            Keluhan Pasien (Anamnesa) <span class="text-red-500">*</span>
+                        </label>
+                        <span class="text-xs text-gray-500 italic">Data awal dari Petugas Pendaftaran</span>
+                    </div>
 
+                    <textarea name="keluhan" rows="4" required
+                        class="w-full rounded-xl border-gray-300 border p-4 text-sm focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none bg-yellow-50 focus:bg-white transition-colors"
+                        placeholder="Catat keluhan pasien secara detail...">{{ old('keluhan', $kunjungan->keluhan) }}</textarea>
+
+                    @error('keluhan')
+                        <p class="text-red-600 text-sm mt-2">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="mb-6">
                     <label class="block text-sm font-semibold text-gray-700 mb-2">
-                        Diagnosa
+                        Diagnosa Medis <span class="text-red-500">*</span>
                     </label>
 
-                    <textarea name="diagnosa" rows="5" required
-                        class="w-full rounded-xl border-gray-300 border p-4 text-sm focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none bg-gray-50 focus:bg-white transition-colors">{{ old('diagnosa', $kunjungan->diagnosa) }}</textarea>
+                    <textarea name="diagnosa" rows="4" required
+                        class="w-full rounded-xl border-gray-300 border p-4 text-sm focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none bg-gray-50 focus:bg-white transition-colors"
+                        placeholder="Tuliskan hasil diagnosa...">{{ old('diagnosa', $kunjungan->diagnosa) }}</textarea>
 
                     @error('diagnosa')
-                        <p class="text-red-600 text-sm mt-2">
-                            {{ $message }}
-                        </p>
+                        <p class="text-red-600 text-sm mt-2">{{ $message }}</p>
                     @enderror
                 </div>
 
-                <!-- Tindakan -->
-                <div class="mb-6">
-
+                <div class="mb-8">
                     <label class="block text-sm font-semibold text-gray-700 mb-2">
-                        Tindakan
+                        Tindakan / Terapi <span class="text-red-500">*</span>
                     </label>
 
-                    <textarea name="tindakan" rows="5" required
-                        class="w-full rounded-xl border-gray-300 border p-4 text-sm focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none bg-gray-50 focus:bg-white transition-colors">{{ old('tindakan', $kunjungan->tindakan) }}</textarea>
+                    <textarea name="tindakan" rows="4" required
+                        class="w-full rounded-xl border-gray-300 border p-4 text-sm focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none bg-gray-50 focus:bg-white transition-colors"
+                        placeholder="Tuliskan tindakan medis atau resep obat yang diberikan...">{{ old('tindakan', $kunjungan->tindakan) }}</textarea>
 
                     @error('tindakan')
-                        <p class="text-red-600 text-sm mt-2">
-                            {{ $message }}
-                        </p>
+                        <p class="text-red-600 text-sm mt-2">{{ $message }}</p>
                     @enderror
                 </div>
 
-                <!-- Buttons -->
-                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-
-                    <!-- Back -->
+                <div class="flex flex-col sm:flex-row items-center justify-end gap-3 pt-4 border-t border-gray-200">
                     <a href="{{ route('perawat.kunjungan') }}"
-                        class="w-full sm:w-auto text-center bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-5 py-3 rounded-xl font-semibold transition duration-200">
-
-                        Kembali
+                        class="w-full sm:w-auto text-center bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-6 py-2.5 rounded-lg font-bold transition duration-200 text-sm">
+                        Batal
                     </a>
 
-                    <!-- Submit -->
                     <button type="submit"
-                        class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-semibold shadow-sm transition duration-200">
-
-                        Simpan Rekam Medis
+                        class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white px-8 py-2.5 rounded-lg font-bold shadow-sm transition duration-200 text-sm">
+                        Simpan Rekam Medis & Selesai
                     </button>
-
                 </div>
 
             </form>

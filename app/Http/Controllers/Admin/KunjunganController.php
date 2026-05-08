@@ -35,13 +35,22 @@ class KunjunganController extends Controller
     return view('admin.kunjungan.show', compact('kunjungan'));
   }
 
-  public function updateStatus(Request $request, Kunjungan $kunjungan)
+  public function updateStatus(Request $request, $id)
   {
-    $request->validate(['status' => 'required|in:menunggu,diproses,selesai_diperiksa,menunggu_pembayaran,selesai']);
+    $kunjungan = Kunjungan::findOrFail($id);
+    $statusBaru = $request->input('status');
 
-    $kunjungan->status = $request->status;
+    // 1. Update status di tabel Kunjungan
+    $kunjungan->status = $statusBaru;
     $kunjungan->save();
 
-    return redirect()->back()->with('success', 'Status kunjungan diperbarui.');
+    // 2. OTOMATISASI: Jika status kunjungan diubah ke 'selesai', 
+    //    maka status pembayaran (jika ada) otomatis di-set 'Lunas'
+    if ($statusBaru === 'selesai' && $kunjungan->pembayaran) {
+      $kunjungan->pembayaran->status = 'Lunas';
+      $kunjungan->pembayaran->save();
+    }
+
+    return redirect()->back()->with('success', 'Status kunjungan berhasil diperbarui.');
   }
 }

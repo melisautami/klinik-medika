@@ -43,6 +43,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::get('kunjungan/{kunjungan}', [App\Http\Controllers\Admin\KunjunganController::class, 'show'])->name('kunjungan.show');
     Route::post('kunjungan/{kunjungan}/status', [App\Http\Controllers\Admin\KunjunganController::class, 'updateStatus'])->name('kunjungan.updateStatus');
 
+    Route::resource('tarif', App\Http\Controllers\Admin\TarifController::class);
+
     // Konfirmasi pembayaran
     Route::post('konfirmasi/{id}/bayar', [KonfirmasiController::class, 'konfirmasiBayar'])->name('konfirmasi.bayar');
 
@@ -52,6 +54,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::post('kunjungan/{kunjungan}/pembayaran', [App\Http\Controllers\Admin\PembayaranController::class, 'store'])->name('pembayaran.store');
     // Laporan
     Route::get('laporan', [App\Http\Controllers\Admin\LaporanController::class, 'index'])->name('laporan.index');
+    Route::get('/laporan/pdf', [\App\Http\Controllers\Admin\LaporanController::class, 'cetakPdf'])->name('laporan.pdf');
 });
 //prefik untuk perawat routes
 Route::prefix('perawat')->name('perawat.')->middleware(['auth', 'role:perawat'])->group(function () {
@@ -84,5 +87,5 @@ Route::prefix('pasien')
             ->name('dashboard');
 
         Route::get('/kunjungan/{kunjungan}/detail', [BiodataController::class, 'detailPasien'])
-    ->name('detail');
-});
+            ->name('detail');
+    });

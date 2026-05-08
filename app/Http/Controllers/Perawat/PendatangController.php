@@ -59,16 +59,19 @@ class PendatangController extends Controller
             abort(403);
         }
 
+        // Validasi tambahan
         $request->validate([
+            'keluhan'  => 'required|string',
             'diagnosa' => 'required|string',
             'tindakan' => 'required|string',
         ]);
 
-        $kunjungan->update([
-            'diagnosa' => $request->diagnosa,
-            'tindakan' => $request->tindakan,
-            'status' => 'selesai_diperiksa'
-        ]);
+        // Simpan data
+        $kunjungan->keluhan  = $request->keluhan;
+        $kunjungan->diagnosa = $request->diagnosa;
+        $kunjungan->tindakan = $request->tindakan;
+        $kunjungan->status   = 'selesai_diperiksa';
+        $kunjungan->save();
 
         return redirect()->route('perawat.kunjungan')
             ->with('success', 'Rekam medis berhasil disimpan');
