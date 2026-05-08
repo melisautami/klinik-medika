@@ -57,10 +57,10 @@
                             class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold whitespace-nowrap transition-colors {{ request()->routeIs('perawat.kunjungan.*') ? 'border-green-500 text-green-700' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-800' }}">
                             Pemeriksaan Aktif
                         </a>
-                        <a href="{{ route('perawat.riwayat') }}"
+                        {{-- <a href="{{ route('perawat.riwayat') }}"
                             class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold whitespace-nowrap transition-colors {{ request()->routeIs('perawat.riwayat') ? 'border-green-500 text-green-700' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-800' }}">
                             Riwayat Medis
-                        </a>
+                        </a> --}}
                     @endif
 
                 </div>
