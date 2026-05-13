@@ -161,11 +161,11 @@
                         Lihat Antrian
                     </a>
 
-                    <a href="{{ route('perawat.riwayat') }}"
+                    {{-- <a href="{{ route('perawat.riwayat') }}"
                         class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl font-semibold shadow-sm transition duration-200">
 
                         Riwayat Pemeriksaan
-                    </a>
+                    </a> --}}
 
                 </div>
             </div>

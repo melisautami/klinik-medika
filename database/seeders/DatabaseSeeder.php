@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             AdminSeeder::class,
-            PerawatPasienSeeder::class,
+            // PerawatPasienSeeder::class,
         ]);
     }
 }

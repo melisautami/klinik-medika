@@ -58,10 +58,12 @@
 
                     <!-- Block Tanggal Lahir -->
                     <div class="bg-gray-50 px-5 py-4 rounded-lg border border-gray-100">
-                        <dt class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Tanggal Lahir</dt>
+                        <dt class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
+                            Tanggal Lahir
+                        </dt>
+
                         <dd class="text-base font-medium text-gray-900">
-                            <!-- Format diubah menjadi d/m/Y agar lebih rapi, contoh: 27/04/2026 -->
-                            {{ $pasien->tanggal_lahir ?? '-' }}
+                            {{ $pasien->tanggal_lahir ? \Carbon\Carbon::parse($pasien->tanggal_lahir)->translatedFormat('d F Y') : '-' }}
                         </dd>
                     </div>
 
