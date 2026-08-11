@@ -9,98 +9,113 @@ use Illuminate\Support\Facades\Auth;
 class AuthController extends Controller
 {
     /**
-     * Form login
+     * Form login admin
      */
-    public function loginForm()
+    public function adminLoginForm()
     {
-        return view('auth.login');
+        return view('auth.admin-login');
     }
 
     /**
-     * Proses login
+     * Form login perawat
      */
-    /**
-     * Proses login
-     */
-    public function login(Request $request)
+    public function perawatLoginForm()
     {
-        // Validasi input awal
+        return view('auth.perawat-login');
+    }
+
+    /**
+     * Form login pasien
+     */
+    public function pasienLoginForm()
+    {
+        return view('auth.pasien-login');
+    }
+
+    /**
+     * Proses login admin
+     */
+    public function loginAdmin(Request $request)
+    {
+        return $this->authenticate($request, 'admin');
+    }
+
+    /**
+     * Proses login perawat
+     */
+    public function loginPerawat(Request $request)
+    {
+        return $this->authenticate($request, 'perawat');
+    }
+
+    /**
+     * Proses login pasien
+     */
+    public function loginPasien(Request $request)
+    {
+        return $this->authenticate($request, 'pasien');
+    }
+
+    private function authenticate(Request $request, string $role)
+    {
         $request->validate([
             'login_id' => ['required'],
             'password' => ['required'],
         ]);
 
-        $loginId = $request->login_id;
-        $password = $request->password;
+        if ($role === 'pasien') {
+            $pasien = Pasien::with('pengguna')->where('nik', $request->login_id)->first();
 
-        /**
-         * SKENARIO 1: Jika input hanya berisi ANGKA (Dianggap sebagai NIK Pasien)
-         */
-        if (is_numeric($loginId)) {
-
-            // cari pasien berdasarkan NIK
-            $pasien = Pasien::with('pengguna')->where('nik', $loginId)->first();
-
-            if (!$pasien) {
+            if (!$pasien || !$pasien->pengguna) {
                 return back()->withErrors([
-                    'login_id' => 'NIK tidak terdaftar di sistem kami.'
+                    'login_id' => 'NIK atau akun pasien tidak ditemukan.'
                 ])->onlyInput('login_id');
             }
 
-            if (!$pasien->pengguna) {
-                return back()->withErrors([
-                    'login_id' => 'Akun pasien belum diaktifkan.'
-                ])->onlyInput('login_id');
-            }
-
-            // Login menggunakan email milik relasi pasien tersebut
-            $login = Auth::attempt([
+            $credentials = [
                 'email' => $pasien->pengguna->email,
-                'password' => $password,
+                'password' => $request->password,
                 'role' => 'pasien'
-            ]);
-
-            if (!$login) {
-                return back()->withErrors([
-                    'password' => 'Kata sandi yang Anda masukkan salah.'
-                ])->onlyInput('login_id');
-            }
+            ];
+        } else {
+            $credentials = [
+                'email' => $request->login_id,
+                'password' => $request->password,
+                'role' => $role
+            ];
         }
 
-        /**
-         * SKENARIO 2: Jika input bukan angka murni (Dianggap sebagai Email Admin/Perawat)
-         */
-        else {
-
-            // Coba login sebagai Admin/Perawat
-            $login = Auth::attempt([
-                'email' => $loginId,
-                'password' => $password
-            ]);
-
-            if (!$login) {
-                return back()->withErrors([
-                    'login_id' => 'Email atau kata sandi yang Anda masukkan salah.'
-                ])->onlyInput('login_id');
-            }
+        if (!Auth::attempt($credentials)) {
+            return back()->withErrors([
+                'login_id' => $role === 'pasien'
+                    ? 'NIK atau kata sandi yang Anda masukkan salah.'
+                    : 'Email atau kata sandi yang Anda masukkan salah.'
+            ])->onlyInput('login_id');
         }
 
-        /**
-         * Session regenerate & Redirect (BERLAKU UNTUK KEDUANYA)
-         */
         $request->session()->regenerate();
         $user = Auth::user();
 
-        if ($user->role === 'admin') {
-            return redirect()->route('admin.dashboard')->with('success', 'Selamat datang di dashboard admin');
-        } elseif ($user->role === 'perawat') {
-            return redirect()->route('perawat.dashboard')->with('success', 'Selamat datang di dashboard perawat');
-        } elseif ($user->role === 'pasien') {
-            return redirect()->route('pasien.dashboard')->with('success', 'Selamat datang di portal pasien');
-        } else {
+        if ($user->role !== $role) {
             Auth::logout();
-            return redirect()->route('login')->withErrors('Role pengguna tidak dikenali');
+            return back()->withErrors([
+                'login_id' => 'Akun ini tidak terdaftar sebagai ' . $role . '.'
+            ])->onlyInput('login_id');
         }
+
+        $redirectRoute = match ($role) {
+            'admin' => 'admin.dashboard',
+            'perawat' => 'perawat.dashboard',
+            'pasien' => 'pasien.dashboard',
+        };
+
+        $successMessage = match ($role) {
+            'admin' => 'Selamat datang di dashboard admin',
+            'perawat' => 'Selamat datang di dashboard perawat',
+            'pasien' => 'Selamat datang di portal pasien',
+        };
+
+        return redirect()->route($redirectRoute)->with('success', $successMessage);
     }
 
     /**

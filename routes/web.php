@@ -12,13 +12,19 @@ use App\Http\Controllers\Pasien\BiodataController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('auth.login');
+    return redirect()->route('login');
 });
 
-// Auth routes  logout
+// Auth routes
 Route::middleware('guest')->group(function () {
-    Route::get('/login', [AuthController::class, 'loginForm'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/login', [AuthController::class, 'pasienLoginForm'])->name('login');
+    Route::get('/login/admin', [AuthController::class, 'adminLoginForm'])->name('login.admin');
+    Route::get('/login/perawat', [AuthController::class, 'perawatLoginForm'])->name('login.perawat');
+    Route::get('/login/pasien', [AuthController::class, 'pasienLoginForm'])->name('login.pasien');
+
+    Route::post('/login/admin', [AuthController::class, 'loginAdmin'])->name('login.admin.post');
+    Route::post('/login/perawat', [AuthController::class, 'loginPerawat'])->name('login.perawat.post');
+    Route::post('/login/pasien', [AuthController::class, 'loginPasien'])->name('login.pasien.post');
 });
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
