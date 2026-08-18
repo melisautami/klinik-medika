@@ -12,7 +12,7 @@
     <div class="w-full max-w-md px-6">
         <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
             <div class="text-center mb-8">
-                <h3 class="text-2xl font-bold text-black">Login Admin</h3>
+                <h3 class="text-2xl font-bold text-black">Login Petugas</h3>
                 <p class="text-gray-500 mt-2 text-sm">Masuk untuk mengelola sistem klinik</p>
             </div>
 
