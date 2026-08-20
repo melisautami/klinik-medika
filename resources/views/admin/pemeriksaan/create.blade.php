@@ -56,77 +56,32 @@
 
                 <div class="grid grid-cols-1 gap-6">
 
-                    <!-- Pilih Pasien (searchable + bisa terisi lewat query param pasien_id) -->
+                    <!-- Pilih Pasien -->
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1">Pilih Pasien <span
                                 class="text-red-500">*</span></label>
 
                         @php
                             $selectedId = old('pasien_id', request('pasien_id'));
-                            $selectedPasien = $pasiens->firstWhere('id', $selectedId);
-                            // PERBAIKAN DI SINI: Menggunakan $selectedPasien->pengguna->name
-                            $selectedName = $selectedPasien
-                                ? $selectedPasien->pengguna->name ?? 'Pasien #' . $selectedPasien->id
-                                : old('pasien_name', '');
                         @endphp
 
-                        <input list="pasiens-list" id="pasiens-search"
-                            class="w-full rounded-lg border-gray-300 border p-3 text-sm focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none transition-shadow bg-gray-50 focus:bg-white cursor-text"
-                            placeholder="Ketuk untuk mencari pasien berdasarkan nama" autocomplete="off"
-                            value="{{ $selectedName }}" />
-
-                        <datalist id="pasiens-list">
+                        <select name="pasien_id" id="pasien_id_input" required
+                            class="w-full rounded-lg border-gray-300 border p-3 text-sm focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none transition-shadow bg-gray-50 focus:bg-white cursor-pointer">
+                            <option value="">-- Pilih pasien --</option>
                             @foreach ($pasiens as $p)
-                                <!-- PERBAIKAN DI SINI: Menggunakan $p->pengguna->name -->
-                                <option value="{{ $p->pengguna->name ?? 'Pasien #' . $p->id }}"
-                                    data-id="{{ $p->id }}">
+                                <option value="{{ $p->id }}"
+                                    {{ (string) $selectedId === (string) $p->id ? 'selected' : '' }}>
+                                    {{ $p->pengguna->name ?? 'Pasien #' . $p->id }}
+                                </option>
                             @endforeach
-                        </datalist>
+                        </select>
 
-                        <!-- Hidden input yang dikirim ke server -->
-                        <input type="hidden" name="pasien_id" id="pasien_id_input" value="{{ $selectedId }}" />
-
-                        <p class="text-xs text-gray-500 mt-1">Ketik untuk mencari berdasarkan nama. Jika datang dari halaman
-                            detail pasien, isian akan terisi otomatis.</p>
+                        <p class="text-xs text-gray-500 mt-1">Pilih pasien dari daftar. Jika datang dari halaman detail
+                            pasien, pilihan akan otomatis terisi.</p>
 
                         @error('pasien_id')
                             <p class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</p>
                         @enderror
-
-                        <script>
-                            (function() {
-                                // PERBAIKAN DI SINI: Menggunakan $p->pengguna->name di dalam JavaScript map
-                                const patients = @json(
-                                    $pasiens->map(function ($p) {
-                                        return ['id' => $p->id, 'name' => $p->pengguna->name ?? 'Pasien #' . $p->id];
-                                    }));
-
-                                const searchInput = document.getElementById('pasiens-search');
-                                const hiddenInput = document.getElementById('pasien_id_input');
-
-                                function setHiddenByName(name) {
-                                    const found = patients.find(p => p.name === name);
-                                    if (found) hiddenInput.value = found.id;
-                                }
-
-                                // Jika ada pasien_id di query/old, setkan nama di input
-                                const existingId = hiddenInput.value;
-                                if (existingId) {
-                                    const found = patients.find(p => String(p.id) === String(existingId));
-                                    if (found) searchInput.value = found.name;
-                                }
-
-                                // Ketika user memilih/menulis dan fokus keluar, sinkronkan ke hidden input jika ada kecocokan nama
-                                searchInput.addEventListener('change', function(e) {
-                                    setHiddenByName(this.value);
-                                });
-
-                                // Juga pada blur (untuk kasus datalist selection via click)
-                                searchInput.addEventListener('blur', function(e) {
-                                    setHiddenByName(this.value);
-                                });
-                            })();
-                        </script>
                     </div>
 
                     <!-- Tipe Kunjungan -->

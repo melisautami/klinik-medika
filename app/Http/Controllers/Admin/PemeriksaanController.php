@@ -12,7 +12,13 @@ class PemeriksaanController extends Controller
 {
   public function create()
   {
-    $pasiens = Pasien::orderBy('created_at', 'desc')->get();
+    $pasiens = Pasien::with('pengguna')
+      ->whereHas('pengguna', function ($query) {
+        $query->where('role', 'pasien');
+      })
+      ->orderBy('created_at', 'desc')
+      ->get();
+
     $perawats = User::where('role', 'perawat')->get();
 
     return view('admin.pemeriksaan.create', compact('pasiens', 'perawats'));

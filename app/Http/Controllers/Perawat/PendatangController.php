@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Perawat;
 
 use App\Http\Controllers\Controller;
 use App\Models\Kunjungan;
+use App\Models\Tarif;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -61,15 +62,32 @@ class PendatangController extends Controller
 
         // Validasi tambahan
         $request->validate([
-            'keluhan'  => 'required|string',
-            'diagnosa' => 'required|string',
-            'tindakan' => 'required|string',
+            'keluhan'   => 'required|string',
+            'diagnosa'  => 'required|string',
+            'tindakan'  => 'nullable|string',
+            'tarif_ids' => 'nullable|array',
+            'tarif_ids.*' => 'exists:tarifs,id',
         ]);
+
+        $tarifNames = [];
+        if ($request->filled('tarif_ids')) {
+            $tarifNames = Tarif::whereIn('id', $request->tarif_ids)->pluck('nama_tindakan')->toArray();
+        }
+
+        $tindakanText = trim((string) $request->tindakan ?? '');
+        if (!empty($tarifNames)) {
+            $selectedTarifText = implode(', ', $tarifNames);
+            $tindakanText = $tindakanText === '' ? $selectedTarifText : $tindakanText . ' | ' . $selectedTarifText;
+        }
+
+        if (trim($tindakanText) === '') {
+            return back()->withErrors(['tindakan' => 'Pilih atau tulis minimal satu tindakan medik.'])->withInput();
+        }
 
         // Simpan data
         $kunjungan->keluhan  = $request->keluhan;
         $kunjungan->diagnosa = $request->diagnosa;
-        $kunjungan->tindakan = $request->tindakan;
+        $kunjungan->tindakan = $tindakanText;
         $kunjungan->status   = 'selesai_diperiksa';
         $kunjungan->save();
 

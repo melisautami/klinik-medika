@@ -15,12 +15,19 @@ class KonfirmasiController extends Controller
 
     $request->validate(['status' => 'required|in:lunas,belum']);
 
-    // sederhana: buat atau update pembayaran
+    $statusBayar = $request->status === 'lunas' ? 'Lunas' : 'Belum Lunas';
+
     $pembayaran = Pembayaran::updateOrCreate(
       ['kunjungan_id' => $kunjungan->id],
-      ['status' => $request->status]
+      [
+        'status' => $statusBayar,
+        'tanggal_bayar' => $request->status === 'lunas' ? now() : null,
+      ]
     );
 
-    return redirect()->back()->with('success', 'Status pembayaran diperbarui.');
+    $kunjungan->status = $request->status === 'lunas' ? 'selesai' : 'menunggu_pembayaran';
+    $kunjungan->save();
+
+    return redirect()->back()->with('success', 'Status pembayaran berhasil diperbarui.');
   }
 }
