@@ -43,12 +43,17 @@ class PerawatPasienSeeder extends Seeder
     }
 
     // 3. Pasien
+    $daftarNama = ['Asep', 'Melisa', 'Meli', 'Satria', 'Padhil'];
     $pasienIds = [];
-    foreach (range(1, 12) as $i) {
+
+    foreach ($daftarNama as $index => $nama) {
+      $i = $index + 1; 
+      $emailName = strtolower($nama);
+
       $user = User::firstOrCreate(
-        ['email' => "pasien{$i}@example.test"],
+        ['email' => "{$emailName}@example.test"],
         [
-          'name' => "Pasien {$i}",
+          'name' => $nama,
           'password' => Hash::make('secret'),
           'role' => 'pasien',
         ]

@@ -65,7 +65,7 @@ class PendatangController extends Controller
             'keluhan'   => 'required|string',
             'diagnosa'  => 'required|string',
             'tindakan'  => 'nullable|string',
-            'tarif_ids' => 'nullable|array',
+            'tarif_ids' => 'required|array|min:1',
             'tarif_ids.*' => 'exists:tarifs,id',
         ]);
 
@@ -88,6 +88,7 @@ class PendatangController extends Controller
         $kunjungan->keluhan  = $request->keluhan;
         $kunjungan->diagnosa = $request->diagnosa;
         $kunjungan->tindakan = $tindakanText;
+        $kunjungan->tarif_ids = array_values(array_unique($request->tarif_ids));
         $kunjungan->status   = 'selesai_diperiksa';
         $kunjungan->save();
 

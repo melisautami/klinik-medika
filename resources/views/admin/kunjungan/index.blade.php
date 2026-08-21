@@ -109,7 +109,7 @@
                                         <form action="{{ route('admin.kunjungan.updateStatus', $k->id) }}" method="POST"
                                             class="flex items-center space-x-2">
                                             @csrf
-                                            @method('PATCH')
+                                            @method('POST')
                                             <!-- Biasanya update status menggunakan PATCH, sesuaikan dengan route Anda -->
                                             <select name="status" onchange="this.form.submit()"
                                                 class="border border-gray-300 rounded text-xs p-1.5 focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none bg-gray-50 cursor-pointer">

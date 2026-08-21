@@ -38,18 +38,17 @@ class KunjunganController extends Controller
   public function updateStatus(Request $request, $id)
   {
     $kunjungan = Kunjungan::findOrFail($id);
-    $statusBaru = $request->input('status');
+    $statusBaru = $request->validate([
+      'status' => 'required|in:menunggu,diproses,selesai_diperiksa,menunggu_pembayaran,selesai',
+    ])['status'];
+
+    if ($statusBaru === 'selesai' && (!$kunjungan->pembayaran || $kunjungan->pembayaran->status !== 'lunas')) {
+      return redirect()->back()->with('error', 'Kunjungan hanya dapat berstatus selesai setelah pembayaran lunas.');
+    }
 
     // 1. Update status di tabel Kunjungan
     $kunjungan->status = $statusBaru;
     $kunjungan->save();
-
-    // 2. OTOMATISASI: Jika status kunjungan diubah ke 'selesai', 
-    //    maka status pembayaran (jika ada) otomatis di-set 'Lunas'
-    if ($statusBaru === 'selesai' && $kunjungan->pembayaran) {
-      $kunjungan->pembayaran->status = 'Lunas';
-      $kunjungan->pembayaran->save();
-    }
 
     return redirect()->back()->with('success', 'Status kunjungan berhasil diperbarui.');
   }

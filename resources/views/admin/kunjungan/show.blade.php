@@ -29,6 +29,12 @@
             </div>
         @endif
 
+        @if (session('error'))
+            <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg mb-6 shadow-sm">
+                <span class="text-red-800 font-medium text-sm">{{ session('error') }}</span>
+            </div>
+        @endif
+
         <!-- Card Utama -->
         <div class="bg-white rounded-xl shadow-lg border-t-4 border-green-500 overflow-hidden">
 
@@ -98,8 +104,8 @@
                             <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Status</p>
                             <span
                                 class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold uppercase tracking-wider 
-                            {{ strtolower($kunjungan->pembayaran->status) == 'lunas' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                {{ $kunjungan->pembayaran->status }}
+                            {{ $kunjungan->pembayaran->status == 'lunas' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                {{ $kunjungan->pembayaran->status == 'lunas' ? 'Lunas' : 'Belum Lunas' }}
                             </span>
                         </div>
                     @endif

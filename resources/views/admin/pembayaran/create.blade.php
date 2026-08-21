@@ -8,7 +8,7 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
             <div>
                 <h2 class="text-2xl font-bold text-gray-900">Buat Tagihan Pembayaran</h2>
-                <p class="text-sm text-gray-500 mt-1">Pilih rincian tindakan medis dan layanan yang telah diberikan.</p>
+                <p class="text-sm text-gray-500 mt-1">Periksa rincian tindakan medis yang sudah dipilih perawat.</p>
             </div>
             <a href="{{ route('admin.kunjungan.show', $kunjungan->id) }}"
                 class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 hover:text-green-600 transition-colors shadow-sm text-sm whitespace-nowrap">
@@ -58,7 +58,7 @@
             <form action="{{ route('admin.pembayaran.store', $kunjungan->id) }}" method="POST" class="p-6 bg-gray-50">
                 @csrf
 
-                <h3 class="text-lg font-bold text-gray-900 mb-4">Pilih Rincian Tarif / Tindakan</h3>
+                <h3 class="text-lg font-bold text-gray-900 mb-4">Rincian Tindakan Perawat</h3>
 
                 @error('tarif_ids')
                     <div class="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm font-semibold">
@@ -68,14 +68,10 @@
 
                 <div class="space-y-3 mb-8">
                     @forelse ($tarifs as $t)
-                        <label for="tarif_{{ $t->id }}"
-                            class="flex items-center justify-between p-4 bg-white border-2 border-gray-200 rounded-xl cursor-pointer hover:bg-green-50 hover:border-green-300 transition-all group shadow-sm">
-                            <div class="flex items-center gap-4">
-                                <input type="checkbox" name="tarif_ids[]" value="{{ $t->id }}"
-                                    id="tarif_{{ $t->id }}" data-harga="{{ $t->harga }}"
-                                    class="tarif-checkbox h-5 w-5 text-green-600 focus:ring-green-500 border-gray-300 rounded cursor-pointer transition-colors">
-
-                                <span class="font-bold text-gray-800 group-hover:text-green-800 transition-colors">
+                        <div
+                            class="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl shadow-sm">
+                            <div>
+                                <span class="font-bold text-gray-800">
                                     {{ $t->nama_tindakan }}
                                 </span>
                             </div>
@@ -83,10 +79,10 @@
                             <span class="font-black text-gray-900">
                                 Rp {{ number_format($t->harga, 0, ',', '.') }}
                             </span>
-                        </label>
+                        </div>
                     @empty
                         <div class="p-6 text-center border-2 border-dashed border-gray-300 rounded-xl bg-white">
-                            <p class="text-gray-500 font-medium">Data tarif/tindakan medis belum tersedia di sistem.</p>
+                            <p class="text-gray-500 font-medium">Belum ada tindakan bertarif yang dipilih perawat.</p>
                         </div>
                     @endforelse
                 </div>
@@ -96,7 +92,8 @@
                     <div
                         class="w-full sm:w-auto bg-green-100 border border-green-300 px-5 py-3 rounded-xl flex items-center justify-between gap-4 shadow-sm">
                         <span class="text-sm font-bold text-green-800">Estimasi Total:</span>
-                        <span class="text-xl font-black text-green-700" id="estimasi_total">Rp 0</span>
+                        <span class="text-xl font-black text-green-700">Rp
+                            {{ number_format($tarifs->sum('harga'), 0, ',', '.') }}</span>
                     </div>
 
                     <div class="flex w-full sm:w-auto gap-3">
@@ -116,28 +113,4 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const checkboxes = document.querySelectorAll('.tarif-checkbox');
-            const displayTotal = document.getElementById('estimasi_total');
-
-            function hitungTotal() {
-                let total = 0;
-                checkboxes.forEach(function(checkbox) {
-                    if (checkbox.checked) {
-                        // Ambil nilai data-harga dari atribut HTML
-                        total += parseInt(checkbox.getAttribute('data-harga'));
-                    }
-                });
-
-                // Format ke format Rupiah (Contoh: Rp 150.000)
-                displayTotal.innerText = 'Rp ' + total.toLocaleString('id-ID');
-            }
-
-            // Pasang event listener ke setiap checkbox
-            checkboxes.forEach(function(checkbox) {
-                checkbox.addEventListener('change', hitungTotal);
-            });
-        });
-    </script>
 @endsection

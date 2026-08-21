@@ -23,6 +23,16 @@
             </div>
         @endif
 
+        @if ($errors->any())
+            <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg mb-6 shadow-sm">
+                <ul class="text-red-800 font-medium text-sm list-disc list-inside">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <!-- Form Filter Pencarian -->
         <div
             class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 mb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
@@ -92,7 +102,7 @@
                                             class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-800 uppercase tracking-wider">
                                             Menunggu Tarif
                                         </span>
-                                    @elseif($k->pembayaran->status == 'Belum Lunas')
+                                    @elseif($k->pembayaran->status == 'belum_lunas')
                                         <span
                                             class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800 uppercase tracking-wider">
                                             Belum Lunas
@@ -113,13 +123,13 @@
                                             class="inline-flex items-center px-3 py-1.5 bg-black text-white text-xs font-bold rounded-md hover:bg-gray-800 transition-colors shadow-sm">
                                             Input Tarif
                                         </a>
-                                    @elseif($k->pembayaran->status == 'Belum Lunas')
+                                    @elseif($k->pembayaran->status == 'belum_lunas')
                                         <!-- Aksi 2: Konfirmasi Bayar jika pasien sudah menyerahkan uang -->
-                                        <form action="{{ route('admin.konfirmasi.bayar', $k->pembayaran->id) }}"
-                                            method="POST" class="inline"
+                                        <form action="{{ route('admin.konfirmasi.bayar', $k->id) }}" method="POST"
+                                            class="inline"
                                             onsubmit="return confirm('Konfirmasi bahwa pasien ini telah membayar lunas tagihan sebesar Rp {{ number_format($k->pembayaran->total_bayar, 0, ',', '.') }}?')">
                                             @csrf
-                                            <!-- Umumnya menggunakan PATCH/PUT untuk update status -->
+                                            <input type="hidden" name="status" value="lunas">
                                             <button type="submit"
                                                 class="inline-flex items-center px-3 py-1.5 bg-green-500 text-white text-xs font-bold rounded-md hover:bg-green-600 transition-colors shadow-sm cursor-pointer">
                                                 Konfirmasi Lunas

@@ -52,7 +52,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::resource('tarif', App\Http\Controllers\Admin\TarifController::class);
 
     // Konfirmasi pembayaran
-    Route::post('konfirmasi/{id}/bayar', [KonfirmasiController::class, 'konfirmasiBayar'])->name('konfirmasi.bayar');
+    Route::post('konfirmasi/{kunjungan}/bayar', [KonfirmasiController::class, 'konfirmasiBayar'])->name('konfirmasi.bayar');
 
     // Pembayaran / Tarif conversion
     Route::get('pembayaran', [App\Http\Controllers\Admin\PembayaranController::class, 'index'])->name('pembayaran.index'); // <-- TAMBAHKAN INI

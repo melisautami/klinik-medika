@@ -33,19 +33,20 @@ class PembayaranController extends Controller
   // show form to convert kunjungan -> pembayaran
   public function create(Kunjungan $kunjungan)
   {
-    $tarifs = Tarif::orderBy('nama_tindakan')->get();
+    $tarifs = Tarif::whereIn('id', $kunjungan->tarif_ids ?? [])
+      ->orderBy('nama_tindakan')
+      ->get();
     return view('admin.pembayaran.create', compact('kunjungan', 'tarifs'));
   }
 
-  // store pembayaran from selected tarif ids
   public function store(Request $request, Kunjungan $kunjungan)
   {
-    $request->validate([
-      'tarif_ids' => 'required|array|min:1',
-      'tarif_ids.*' => 'exists:tarifs,id',
-    ]);
+    $tarifIds = $kunjungan->tarif_ids ?? [];
+    if (empty($tarifIds)) {
+      return back()->withErrors(['tarif_ids' => 'Belum ada tindakan bertarif yang dipilih perawat.']);
+    }
 
-    $tarifs = Tarif::whereIn('id', $request->tarif_ids)->get();
+    $tarifs = Tarif::whereIn('id', $tarifIds)->get();
     $total = $tarifs->sum('harga');
 
     $pembayaran = Pembayaran::create([

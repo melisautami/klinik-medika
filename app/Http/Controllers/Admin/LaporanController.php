@@ -21,7 +21,7 @@ class LaporanController extends Controller
             ->whereYear('kunjungans.tanggal_kunjungan', $tahun)
             ->where('kunjungans.status', 'selesai') // <-- Perbaikan di sini
             ->whereHas('pembayaran', function ($q) {
-                $q->where('status', 'Lunas');
+                $q->where('status', 'lunas');
             });
 
         // 2. Kalkulasi Ringkasan Data (tambahkan awalan 'kunjungans.' juga)

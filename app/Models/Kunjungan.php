@@ -21,7 +21,12 @@ class Kunjungan extends Model
         'keluhan',
         'diagnosa',
         'tindakan',
+        'tarif_ids',
         'status'
+    ];
+
+    protected $casts = [
+        'tarif_ids' => 'array',
     ];
 
     // 🔹 ke pasien
