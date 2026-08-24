@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\Kunjungan;
 
 class KunjunganController extends Controller
@@ -46,9 +47,17 @@ class KunjunganController extends Controller
       return redirect()->back()->with('error', 'Kunjungan hanya dapat berstatus selesai setelah pembayaran lunas.');
     }
 
-    // 1. Update status di tabel Kunjungan
-    $kunjungan->status = $statusBaru;
-    $kunjungan->save();
+    DB::transaction(function () use ($kunjungan, $statusBaru) {
+      $kunjungan->status = $statusBaru;
+      $kunjungan->save();
+
+      if ($statusBaru === 'menunggu_pembayaran' && $kunjungan->pembayaran) {
+        $kunjungan->pembayaran->update([
+          'status' => 'belum_lunas',
+          'tanggal_bayar' => null,
+        ]);
+      }
+    });
 
     return redirect()->back()->with('success', 'Status kunjungan berhasil diperbarui.');
   }

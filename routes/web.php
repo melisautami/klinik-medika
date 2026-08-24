@@ -18,11 +18,11 @@ Route::get('/', function () {
 // Auth routes
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'pasienLoginForm'])->name('login');
-    Route::get('/login/admin', [AuthController::class, 'adminLoginForm'])->name('login.admin');
+    Route::get('/login/petugas', [AuthController::class, 'adminLoginForm'])->name('login.admin');
     Route::get('/login/perawat', [AuthController::class, 'perawatLoginForm'])->name('login.perawat');
     Route::get('/login/pasien', [AuthController::class, 'pasienLoginForm'])->name('login.pasien');
 
-    Route::post('/login/admin', [AuthController::class, 'loginAdmin'])->name('login.admin.post');
+    Route::post('/login/petugas', [AuthController::class, 'loginAdmin'])->name('login.admin.post');
     Route::post('/login/perawat', [AuthController::class, 'loginPerawat'])->name('login.perawat.post');
     Route::post('/login/pasien', [AuthController::class, 'loginPasien'])->name('login.pasien.post');
 });
@@ -30,7 +30,7 @@ Route::middleware('guest')->group(function () {
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
 //prefik untuk admin routes
-Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->group(function () {
+Route::prefix('petugas')->name('admin.')->middleware(['auth', 'role:admin'])->group(function () {
     // Dashboard
     Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
