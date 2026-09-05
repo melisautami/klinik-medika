@@ -27,10 +27,10 @@
                             Pasien
                         </a>
 
-                        <a href="{{ route('admin.tarif.index') }}"
+                        {{-- <a href="{{ route('admin.tarif.index') }}"
                             class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold whitespace-nowrap transition-colors {{ request()->routeIs('admin.tarif.*') ? 'border-green-500 text-green-700' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-800' }}">
                             Katalog Tarif
-                        </a>
+                        </a> --}}
 
                         <a href="{{ route('admin.kunjungan.index') }}"
                             class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold whitespace-nowrap transition-colors {{ request()->routeIs('admin.kunjungan.*') ? 'border-green-500 text-green-700' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-800' }}">
@@ -111,9 +111,9 @@
                 <a href="{{ route('admin.pasien.index') }}"
                     class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium {{ request()->routeIs('admin.pasien.*') ? 'bg-green-50 border-green-500 text-green-700' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800' }}">Pasien</a>
 
-                <a href="{{ route('admin.tarif.index') }}"
+                {{-- <a href="{{ route('admin.tarif.index') }}"
                     class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium {{ request()->routeIs('admin.tarif.*') ? 'bg-green-50 border-green-500 text-green-700' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800' }}">Katalog
-                    Tarif</a>
+                    Tarif</a> --}}
 
                 <a href="{{ route('admin.kunjungan.index') }}"
                     class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium {{ request()->routeIs('admin.kunjungan.*') ? 'bg-green-50 border-green-500 text-green-700' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800' }}">Antrean

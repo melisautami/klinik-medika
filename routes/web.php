@@ -55,9 +55,10 @@ Route::prefix('petugas')->name('admin.')->middleware(['auth', 'role:admin'])->gr
     Route::post('konfirmasi/{kunjungan}/bayar', [KonfirmasiController::class, 'konfirmasiBayar'])->name('konfirmasi.bayar');
 
     // Pembayaran / Tarif conversion
-    Route::get('pembayaran', [App\Http\Controllers\Admin\PembayaranController::class, 'index'])->name('pembayaran.index'); // <-- TAMBAHKAN INI
+    Route::get('pembayaran', [App\Http\Controllers\Admin\PembayaranController::class, 'index'])->name('pembayaran.index');
     Route::get('kunjungan/{kunjungan}/pembayaran/create', [App\Http\Controllers\Admin\PembayaranController::class, 'create'])->name('pembayaran.create');
     Route::post('kunjungan/{kunjungan}/pembayaran', [App\Http\Controllers\Admin\PembayaranController::class, 'store'])->name('pembayaran.store');
+    Route::get('kunjungan/{kunjungan}/pembayaran/qris', [App\Http\Controllers\Admin\PembayaranController::class, 'qris'])->name('pembayaran.qris');
     // Laporan
     Route::get('laporan', [App\Http\Controllers\Admin\LaporanController::class, 'index'])->name('laporan.index');
     Route::get('/laporan/pdf', [\App\Http\Controllers\Admin\LaporanController::class, 'cetakPdf'])->name('laporan.pdf');

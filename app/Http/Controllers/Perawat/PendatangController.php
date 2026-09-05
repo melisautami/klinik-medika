@@ -64,31 +64,21 @@ class PendatangController extends Controller
         $request->validate([
             'keluhan'   => 'required|string',
             'diagnosa'  => 'required|string',
-            'tindakan'  => 'nullable|string',
-            'tarif_ids' => 'required|array|min:1',
+            'tindakan'  => 'required|string',
+            'tarif_ids' => 'nullable|array',
             'tarif_ids.*' => 'exists:tarifs,id',
         ]);
 
-        $tarifNames = [];
-        if ($request->filled('tarif_ids')) {
-            $tarifNames = Tarif::whereIn('id', $request->tarif_ids)->pluck('nama_tindakan')->toArray();
-        }
-
-        $tindakanText = trim((string) $request->tindakan ?? '');
-        if (!empty($tarifNames)) {
-            $selectedTarifText = implode(', ', $tarifNames);
-            $tindakanText = $tindakanText === '' ? $selectedTarifText : $tindakanText . ' | ' . $selectedTarifText;
-        }
-
-        if (trim($tindakanText) === '') {
-            return back()->withErrors(['tindakan' => 'Pilih atau tulis minimal satu tindakan medik.'])->withInput();
+        $tindakanText = Kunjungan::normalizeTindakanText($request->tindakan);
+        if ($tindakanText === '') {
+            return back()->withErrors(['tindakan' => 'Isi minimal satu tindakan medik dan harga.'])->withInput();
         }
 
         // Simpan data
         $kunjungan->keluhan  = $request->keluhan;
         $kunjungan->diagnosa = $request->diagnosa;
         $kunjungan->tindakan = $tindakanText;
-        $kunjungan->tarif_ids = array_values(array_unique($request->tarif_ids));
+        $kunjungan->tarif_ids = array_values(array_unique($request->input('tarif_ids', [])));
         $kunjungan->status   = 'selesai_diperiksa';
         $kunjungan->save();
 

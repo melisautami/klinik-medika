@@ -29,6 +29,66 @@ class Kunjungan extends Model
         'tarif_ids' => 'array',
     ];
 
+    public static function normalizeTindakanText(?string $text): string
+    {
+        $lines = preg_split('/\R/', trim((string) $text ?? '')) ?: [];
+
+        $cleanLines = array_values(array_filter(array_map(function ($line) {
+            $line = preg_replace('/^\s+/', '', trim($line));
+            return $line === '' ? null : $line;
+        }, $lines)));
+
+        return implode("\n", $cleanLines);
+    }
+
+    public function getParsedTindakanItems()
+    {
+        $items = collect();
+
+        if (!empty($this->tindakan)) {
+            foreach (preg_split('/\R/', (string) $this->tindakan) as $line) {
+                $line = trim($line);
+                if ($line === '') {
+                    continue;
+                }
+
+                if (preg_match('/^(.*?)(?:\s*[-:|]\s*|\s+)(?:Rp\s*)?([0-9\.,]+)\s*$/i', $line, $matches)) {
+                    $nama = trim($matches[1]);
+                    $harga = (int) str_replace(['.', ','], '', $matches[2]);
+
+                    if ($nama !== '' && $harga > 0) {
+                        $items->push((object) [
+                            'nama_tindakan' => $nama,
+                            'harga' => $harga,
+                        ]);
+                    }
+                }
+            }
+        }
+
+        if (!empty($this->tarif_ids)) {
+            $legacyTarifs = Tarif::whereIn('id', $this->tarif_ids)->get();
+
+            foreach ($legacyTarifs as $tarif) {
+                $duplicate = $items->contains(fn($item) => trim($item->nama_tindakan) === trim($tarif->nama_tindakan));
+
+                if (!$duplicate) {
+                    $items->push((object) [
+                        'nama_tindakan' => $tarif->nama_tindakan,
+                        'harga' => (int) $tarif->harga,
+                    ]);
+                }
+            }
+        }
+
+        return $items;
+    }
+
+    public function getTindakanTotal(): int
+    {
+        return (int) $this->getParsedTindakanItems()->sum('harga');
+    }
+
     // 🔹 ke pasien
     public function pasien()
     {

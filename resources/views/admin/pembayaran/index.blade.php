@@ -61,6 +61,7 @@
                         <tr class="bg-green-600 text-white">
                             <th class="py-4 px-6 font-semibold text-sm uppercase tracking-wider">Tanggal</th>
                             <th class="py-4 px-6 font-semibold text-sm uppercase tracking-wider">Nama Pasien</th>
+                            <th class="py-4 px-6 font-semibold text-sm uppercase tracking-wider">Alamat</th>
                             <th class="py-4 px-6 font-semibold text-sm uppercase tracking-wider">Layanan</th>
                             <th class="py-4 px-6 font-semibold text-sm uppercase tracking-wider">Total Tagihan</th>
                             <th class="py-4 px-6 font-semibold text-sm uppercase tracking-wider text-center">Status</th>
@@ -77,6 +78,10 @@
 
                                 <td class="py-4 px-6 font-bold group-hover:text-green-600 transition-colors">
                                     {{ $k->pasien->pengguna->name ?? 'Pasien Terhapus' }}
+                                </td>
+
+                                <td class="py-4 px-6 font-bold group-hover:text-green-600 transition-colors">
+                                    {{ $k->pasien->alamat ?? 'Pasien Terhapus' }}
                                 </td>
 
                                 <td class="py-4 px-6 text-sm">

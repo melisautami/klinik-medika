@@ -96,6 +96,7 @@
                         <tr class="bg-white text-gray-600 border-b-2 border-gray-200">
                             <th class="py-3 px-6 font-semibold text-xs uppercase tracking-wider">Tanggal</th>
                             <th class="py-3 px-6 font-semibold text-xs uppercase tracking-wider">Nama Pasien</th>
+                            <th class="py-3 px-6 font-semibold text-xs uppercase tracking-wider">Alamat</th>
                             <th class="py-3 px-6 font-semibold text-xs uppercase tracking-wider">Layanan</th>
                             <th class="py-3 px-6 font-semibold text-xs uppercase tracking-wider">Nominal Tarif</th>
                         </tr>
@@ -107,6 +108,8 @@
                                     {{ \Carbon\Carbon::parse($item->tanggal_kunjungan)->format('d/m/Y') }}</td>
                                 <td class="py-3 px-6 text-sm font-medium">
                                     {{ $item->pasien->pengguna->name ?? 'Pasien Terhapus' }}</td>
+                                <td class="py-3 px-6 text-sm font-medium">
+                                    {{ $item->pasien->alamat ?? 'Pasien Terhapus' }}</td>
                                 <td class="py-3 px-6 text-sm">
                                     <span
                                         class="px-2 py-1 bg-gray-100 text-gray-700 text-xs font-bold rounded-full uppercase">

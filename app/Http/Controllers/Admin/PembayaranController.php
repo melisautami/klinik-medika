@@ -33,29 +33,62 @@ class PembayaranController extends Controller
   // show form to convert kunjungan -> pembayaran
   public function create(Kunjungan $kunjungan)
   {
-    $tarifs = Tarif::whereIn('id', $kunjungan->tarif_ids ?? [])
-      ->orderBy('nama_tindakan')
-      ->get();
+    $tarifs = $kunjungan->getParsedTindakanItems();
+
+    if ($tarifs->isEmpty()) {
+      $tarifs = Tarif::whereIn('id', $kunjungan->tarif_ids ?? [])
+        ->orderBy('nama_tindakan')
+        ->get();
+    }
+
     return view('admin.pembayaran.create', compact('kunjungan', 'tarifs'));
   }
 
   public function store(Request $request, Kunjungan $kunjungan)
   {
-    $tarifIds = $kunjungan->tarif_ids ?? [];
-    if (empty($tarifIds)) {
-      return back()->withErrors(['tarif_ids' => 'Belum ada tindakan bertarif yang dipilih perawat.']);
-    }
-
-    $tarifs = Tarif::whereIn('id', $tarifIds)->get();
-    $total = $tarifs->sum('harga');
-
-    $pembayaran = Pembayaran::create([
-      'kunjungan_id' => $kunjungan->id,
-      'total_bayar' => $total,
-      'status' => 'belum_lunas',
-      'tanggal_bayar' => null,
+    $request->validate([
+      'metode_pembayaran' => 'required|in:qris,manual',
     ]);
 
-    return redirect()->route('admin.kunjungan.show', $kunjungan->id)->with('success', 'Pembayaran dibuat (belum lunas).');
+    $total = $kunjungan->getTindakanTotal();
+
+    if ($total <= 0) {
+      $tarifIds = $kunjungan->tarif_ids ?? [];
+      if (!empty($tarifIds)) {
+        $total = Tarif::whereIn('id', $tarifIds)->sum('harga');
+      }
+    }
+
+    if ($total <= 0) {
+      return back()->withErrors(['tindakan' => 'Belum ada tindakan dan harga yang dicatat perawat.']);
+    }
+
+    $pembayaran = Pembayaran::updateOrCreate(
+      ['kunjungan_id' => $kunjungan->id],
+      [
+        'total_bayar' => $total,
+        'status' => 'belum_lunas',
+        'metode_pembayaran' => $request->metode_pembayaran,
+        'tanggal_bayar' => null,
+      ]
+    );
+
+    if ($request->metode_pembayaran === 'qris') {
+      return redirect()->route('admin.pembayaran.qris', $kunjungan->id);
+    }
+
+    return redirect()->route('admin.kunjungan.show', $kunjungan->id)->with('success', 'Pembayaran cash berhasil dibuat.');
+  }
+
+  public function qris(Kunjungan $kunjungan)
+  {
+    $kunjungan->load(['pasien.pengguna', 'pembayaran']);
+
+    $pembayaran = $kunjungan->pembayaran;
+    if (!$pembayaran) {
+      return redirect()->route('admin.pembayaran.index')->with('error', 'Tagihan pembayaran belum dibuat.');
+    }
+
+    return view('admin.pembayaran.qris', compact('kunjungan', 'pembayaran'));
   }
 }

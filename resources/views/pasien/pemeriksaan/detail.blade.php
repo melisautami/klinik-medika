@@ -165,38 +165,6 @@
 
                 </div>
 
-                <!-- Diagnosa -->
-                <div class="md:col-span-2">
-
-                    <p class="text-sm text-gray-500 mb-1">
-                        Diagnosa
-                    </p>
-
-                    <div
-                        class="rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-700 leading-relaxed">
-
-                        {{ $kunjungan->diagnosa ?? '-' }}
-
-                    </div>
-
-                </div>
-
-                <!-- Tindakan -->
-                <div class="md:col-span-2">
-
-                    <p class="text-sm text-gray-500 mb-1">
-                        Tindakan / Perawatan
-                    </p>
-
-                    <div
-                        class="rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-700 leading-relaxed">
-
-                        {{ $kunjungan->tindakan ?? '-' }}
-
-                    </div>
-
-                </div>
-
             </div>
 
             <!-- Footer -->

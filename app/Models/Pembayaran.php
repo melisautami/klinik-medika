@@ -14,6 +14,7 @@ class Pembayaran extends Model
         'kunjungan_id',
         'total_bayar',
         'status',
+        'metode_pembayaran',
         'tanggal_bayar'
     ];
 

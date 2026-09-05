@@ -61,6 +61,11 @@
                         <label class="block text-sm font-semibold text-gray-700 mb-1">Pilih Pasien <span
                                 class="text-red-500">*</span></label>
 
+                        <div class="mb-3">
+                            <input type="text" id="search_pasien_input" placeholder="Cari nama pasien..."
+                                class="w-full rounded-lg border-gray-300 border p-3 text-sm focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none transition-shadow bg-gray-50 focus:bg-white" />
+                        </div>
+
                         @php
                             $selectedId = old('pasien_id', request('pasien_id'));
                         @endphp
@@ -70,14 +75,15 @@
                             <option value="">-- Pilih pasien --</option>
                             @foreach ($pasiens as $p)
                                 <option value="{{ $p->id }}"
+                                    data-nama="{{ strtolower($p->pengguna->name ?? 'pasien #' . $p->id) }}"
                                     {{ (string) $selectedId === (string) $p->id ? 'selected' : '' }}>
                                     {{ $p->pengguna->name ?? 'Pasien #' . $p->id }}
                                 </option>
                             @endforeach
                         </select>
 
-                        <p class="text-xs text-gray-500 mt-1">Pilih pasien dari daftar. Jika datang dari halaman detail
-                            pasien, pilihan akan otomatis terisi.</p>
+                        <p class="text-xs text-gray-500 mt-1">Cukup ketik nama pasien untuk memfilter daftar. Jika datang
+                            dari halaman detail pasien, pilihan akan otomatis terisi.</p>
 
                         @error('pasien_id')
                             <p class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</p>
@@ -103,18 +109,25 @@
                     <!-- Assign Perawat -->
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1">Serahkan ke Perawat (Opsional)</label>
-                        <select name="perawat_id"
+
+                        <div class="mb-3">
+                            <input type="text" id="search_perawat_input" placeholder="Cari nama perawat..."
+                                class="w-full rounded-lg border-gray-300 border p-3 text-sm focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none transition-shadow bg-gray-50 focus:bg-white" />
+                        </div>
+
+                        <select name="perawat_id" id="perawat_id_input"
                             class="w-full rounded-lg border-gray-300 border p-3 text-sm focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none transition-shadow bg-gray-50 focus:bg-white cursor-pointer">
                             <option value="" {{ !old('perawat_id') ? 'selected' : '' }}>-- Tidak ada / Ditentukan
                                 nanti --</option>
                             @foreach ($perawats as $u)
-                                <option value="{{ $u->id }}" {{ old('perawat_id') == $u->id ? 'selected' : '' }}>
+                                <option value="{{ $u->id }}" data-nama="{{ strtolower($u->name) }}"
+                                    {{ old('perawat_id') == $u->id ? 'selected' : '' }}>
                                     {{ $u->name }}
                                 </option>
                             @endforeach
                         </select>
-                        <p class="text-xs text-gray-500 mt-1">Kosongkan jika ingin membiarkan sistem memasukkan pasien ke
-                            antrean umum.</p>
+                        <p class="text-xs text-gray-500 mt-1">Cukup ketik nama perawat untuk memfilter daftar. Kosongkan
+                            jika ingin membiarkan sistem memasukkan pasien ke antrean umum.</p>
                         @error('perawat_id')
                             <p class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</p>
                         @enderror
@@ -147,4 +160,46 @@
             </form>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const patientSearch = document.getElementById('search_pasien_input');
+            const patientSelect = document.getElementById('pasien_id_input');
+            const perawatSearch = document.getElementById('search_perawat_input');
+            const perawatSelect = document.getElementById('perawat_id_input');
+
+            const attachFilter = (searchInput, select) => {
+                if (!searchInput || !select) return;
+
+                searchInput.addEventListener('input', function() {
+                    const keyword = this.value.trim().toLowerCase();
+                    const options = Array.from(select.options);
+                    let firstVisible = null;
+
+                    options.forEach((option) => {
+                        if (!option.value) {
+                            option.hidden = false;
+                            return;
+                        }
+
+                        const nama = (option.dataset.nama || option.textContent || '')
+                            .toLowerCase();
+                        const match = !keyword || nama.includes(keyword);
+                        option.hidden = !match;
+
+                        if (match && !firstVisible) {
+                            firstVisible = option;
+                        }
+                    });
+
+                    if (firstVisible) {
+                        select.value = firstVisible.value;
+                    }
+                });
+            };
+
+            attachFilter(patientSearch, patientSelect);
+            attachFilter(perawatSearch, perawatSelect);
+        });
+    </script>
 @endsection

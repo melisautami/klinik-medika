@@ -8,9 +8,6 @@ use Illuminate\Http\Request;
 
 class TarifController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $tarifs = Tarif::latest()->get();
@@ -28,39 +25,39 @@ class TarifController extends Controller
             'nama_tindakan' => 'required|string|max:255',
             'harga' => 'required|numeric|min:0',
         ]);
-        Tarif::create($request->all());
+
+        Tarif::create([
+            'nama_tindakan' => $request->nama_tindakan,
+            'harga' => (int) $request->harga,
+        ]);
+
         return redirect()->route('admin.tarif.index')->with('success', 'Tarif baru berhasil ditambahkan.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit(Tarif $tarif)
     {
-        //
+        return view('admin.tarif.edit', compact('tarif'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, Tarif $tarif)
     {
-        //
+        $request->validate([
+            'nama_tindakan' => 'required|string|max:255',
+            'harga' => 'required|numeric|min:0',
+        ]);
+
+        $tarif->update([
+            'nama_tindakan' => $request->nama_tindakan,
+            'harga' => (int) $request->harga,
+        ]);
+
+        return redirect()->route('admin.tarif.index')->with('success', 'Tarif berhasil diperbarui.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy(Tarif $tarif)
     {
-        //
-    }
+        $tarif->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return redirect()->route('admin.tarif.index')->with('success', 'Tarif berhasil dihapus.');
     }
 }

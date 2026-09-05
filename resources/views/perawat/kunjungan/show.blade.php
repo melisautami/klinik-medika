@@ -122,32 +122,6 @@
             <form action="{{ route('perawat.rekam', $kunjungan) }}" method="POST" class="p-6">
                 @csrf
 
-                @php
-                    $tarifs = \App\Models\Tarif::orderBy('nama_tindakan')->get();
-                @endphp
-
-                <div class="mb-6">
-                    <label class="block text-sm font-semibold text-gray-700 mb-3">
-                        Pilih Tindakan dari Katalog Tarif <span class="text-red-500">*</span>
-                    </label>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 rounded-xl border border-gray-200 bg-gray-50 p-4">
-                        @forelse ($tarifs as $tarif)
-                            <label
-                                class="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 hover:border-green-400 transition">
-                                <input type="checkbox" name="tarif_ids[]" value="{{ $tarif->id }}"
-                                    class="h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500"
-                                    {{ in_array($tarif->id, old('tarif_ids', [])) ? 'checked' : '' }}>
-                                <span class="font-medium">{{ $tarif->nama_tindakan }}</span>
-                                <span class="ml-auto text-xs text-gray-500">Rp
-                                    {{ number_format($tarif->harga, 0, ',', '.') }}</span>
-                            </label>
-                        @empty
-                            <p class="text-sm text-gray-500 italic md:col-span-2">Belum ada katalog tarif yang tersedia.</p>
-                        @endforelse
-                    </div>
-                </div>
-
                 <div class="mb-6">
                     <div class="flex justify-between items-end mb-2">
                         <label class="block text-sm font-semibold text-gray-700">
@@ -181,15 +155,17 @@
 
                 <div class="mb-8">
                     <label class="block text-sm font-semibold text-gray-700 mb-2">
-                        Catatan Tindakan / Terapi <span class="text-red-500">*</span>
+                        Catatan Tindakan / Terapi & Harga <span class="text-red-500">*</span>
                     </label>
 
-                    <textarea name="tindakan" rows="4"
+                    <textarea name="tindakan" rows="6" required
                         class="w-full rounded-xl border-gray-300 border p-4 text-sm focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none bg-gray-50 focus:bg-white transition-colors"
-                        placeholder="Tuliskan tindakan medis atau resep obat yang diberikan...">{{ old('tindakan', $kunjungan->tindakan) }}</textarea>
+                        placeholder="Contoh:
+Paracetamol - Rp 5.000
+Obat batuk - Rp 15.000
+Tindakan penanganan - Rp 50.000">{{ old('tindakan', $kunjungan->tindakan) }}</textarea>
 
-                    <p class="text-xs text-gray-500 mt-2">Jika memilih dari katalog tarif, data tersebut akan ikut tertulis
-                        di catatan tindakan.</p>
+                    <p class="text-xs text-gray-500 mt-2">Format satu per baris: Nama tindakan - Rp 50.000</p>
 
                     @error('tindakan')
                         <p class="text-red-600 text-sm mt-2">{{ $message }}</p>
