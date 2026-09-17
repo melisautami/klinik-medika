@@ -28,7 +28,7 @@
                         </svg>
                     </div>
                     <input type="text" name="search" value="{{ request('search') }}"
-                        placeholder="Cari berdasarkan nama pasien..."
+                        placeholder="Cari berdasarkan nama atau NIK pasien..."
                         class="w-full pl-10 rounded-lg border-gray-300 border p-2.5 text-sm focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none transition-shadow bg-gray-50 focus:bg-white"
                         autocomplete="off">
                 </div>
@@ -88,7 +88,7 @@
                         <tr>
                             <td colspan="4" class="py-8 px-6 text-center text-gray-500 font-medium">
                                 @if (request('search'))
-                                    Pasien dengan nama "<span
+                                    Pasien dengan nama atau NIK "<span
                                         class="font-bold text-gray-800">{{ request('search') }}</span>" tidak ditemukan.
                                 @else
                                     Belum ada data pasien yang terdaftar.
@@ -102,7 +102,7 @@
             <!-- Container pagination dengan padding -->
             @if ($pasiens->hasPages())
                 <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
-                    {{ $pasiens->appends(['search' => request('search')])->links() }}
+                    {{ $pasiens->links() }}
                 </div>
             @endif
         </div>

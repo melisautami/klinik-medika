@@ -19,18 +19,54 @@ class PasienController extends Controller
 
     // Jika ada input pencarian
     if ($request->has('search') && $request->search != '') {
-      $search = $request->search;
+      $search = trim($request->search);
 
-      // Cari berdasarkan relasi nama di tabel users
-      $query->whereHas('pengguna', function ($q) use ($search) {
-        $q->where('name', 'like', '%' . $search . '%');
+      // Cari berdasarkan nama pengguna atau NIK pasien
+      $query->where(function ($q) use ($search) {
+        $q->whereHas('pengguna', function ($userQuery) use ($search) {
+          $userQuery->where('name', 'like', '%' . $search . '%');
+        })->orWhere('nik', 'like', '%' . $search . '%');
       });
     }
 
     // Mengambil data dengan pagination (misal 10 data per halaman) dan urutan terbaru
-    $pasiens = $query->latest()->paginate(10);
+    $pasiens = $query->latest()->paginate(10)->withQueryString();
 
     return view('admin.pasien.index', compact('pasiens'));
+  }
+
+  public function kategori(Request $request, string $kategori)
+  {
+    abort_unless(in_array($kategori, ['baru', 'lama'], true), 404);
+
+    $today = now()->toDateString();
+    $query = Pasien::with('pengguna')->whereHas('pengguna', function ($q) {
+      $q->where('role', 'pasien');
+    });
+
+    if ($kategori === 'baru') {
+      $query->whereDate('created_at', $today);
+      $judul = 'Pasien Baru';
+      $deskripsi = 'Pasien yang terdaftar hari ini.';
+    } else {
+      $query->whereDate('created_at', '<', $today);
+      $judul = 'Pasien Lama';
+      $deskripsi = 'Pasien yang terdaftar sebelum hari ini.';
+    }
+
+    if ($request->filled('search')) {
+      $search = trim($request->search);
+
+      $query->where(function ($q) use ($search) {
+        $q->whereHas('pengguna', function ($userQuery) use ($search) {
+          $userQuery->where('name', 'like', '%' . $search . '%');
+        })->orWhere('nik', 'like', '%' . $search . '%');
+      });
+    }
+
+    $pasiens = $query->latest()->paginate(10)->withQueryString();
+
+    return view('admin.pasien.kategori', compact('pasiens', 'kategori', 'judul', 'deskripsi'));
   }
 
   public function show(Pasien $pasien)
@@ -52,12 +88,13 @@ class PasienController extends Controller
       'alamat' => 'required|string',
       'no_hp' => 'required|string',
       'tanggal_lahir' => 'required|date',
+      'password' => 'required|string|min:6|confirmed',
     ]);
 
     $user = User::create([
       'name' => $data['name'],
       'email' => $data['email'],
-      'password' => Hash::make('klinik'),
+      'password' => Hash::make($data['password']),
       'role' => 'pasien',
     ]);
 
@@ -87,14 +124,21 @@ class PasienController extends Controller
       'alamat' => 'required|string',
       'no_hp' => 'required|string',
       'tanggal_lahir' => 'required|date',
+      'password' => 'nullable|string|min:6|confirmed',
     ]);
 
     // update user
     if ($pasien->pengguna) {
-      $pasien->pengguna->update([
+      $userData = [
         'name' => $data['name'],
         'email' => $data['email'],
-      ]);
+      ];
+
+      if (!empty($data['password'])) {
+        $userData['password'] = Hash::make($data['password']);
+      }
+
+      $pasien->pengguna->update($userData);
     }
 
     // update pasien

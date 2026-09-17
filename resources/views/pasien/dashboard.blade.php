@@ -17,6 +17,22 @@
             <p class="mt-2 text-sm text-green-100">
                 Pantau riwayat pemeriksaan dan status layanan klinik Anda.
             </p>
+
+            <div
+                class="mt-5 inline-flex items-center rounded-full bg-white/20 px-4 py-2 text-sm font-semibold ring-1 ring-white/30">
+                Status Anda: {{ $statusPasien }}
+            </div>
+        </div>
+
+        <div class="mb-8 flex flex-wrap gap-3">
+            <a href="{{ route('pasien.pendaftaran.index') }}"
+                class="inline-flex items-center rounded-xl bg-green-600 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-green-700">
+                Status Pendaftaran
+            </a>
+            <a href="{{ route('pasien.pendaftaran.create') }}"
+                class="inline-flex items-center rounded-xl bg-white border border-gray-200 px-5 py-3 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50">
+                + Ajukan Pendaftaran Baru
+            </a>
         </div>
 
         <!-- Statistik -->

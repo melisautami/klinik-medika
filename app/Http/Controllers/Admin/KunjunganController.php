@@ -38,20 +38,25 @@ class KunjunganController extends Controller
 
   public function updateStatus(Request $request, $id)
   {
-    $kunjungan = Kunjungan::findOrFail($id);
+    $kunjungan = Kunjungan::with('pembayaran')->findOrFail($id);
     $statusBaru = $request->validate([
       'status' => 'required|in:menunggu,diproses,selesai_diperiksa,menunggu_pembayaran,selesai',
     ])['status'];
 
-    if ($statusBaru === 'selesai' && (!$kunjungan->pembayaran || $kunjungan->pembayaran->status !== 'lunas')) {
-      return redirect()->back()->with('error', 'Kunjungan hanya dapat berstatus selesai setelah pembayaran lunas.');
+    if ($statusBaru === 'selesai' && !$kunjungan->pembayaran) {
+      return redirect()->back()->with('error', 'Buat tagihan pembayaran terlebih dahulu sebelum menyelesaikan kunjungan.');
     }
 
     DB::transaction(function () use ($kunjungan, $statusBaru) {
       $kunjungan->status = $statusBaru;
       $kunjungan->save();
 
-      if ($statusBaru === 'menunggu_pembayaran' && $kunjungan->pembayaran) {
+      if ($statusBaru === 'selesai') {
+        $kunjungan->pembayaran->update([
+          'status' => 'lunas',
+          'tanggal_bayar' => now(),
+        ]);
+      } elseif ($statusBaru === 'menunggu_pembayaran' && $kunjungan->pembayaran) {
         $kunjungan->pembayaran->update([
           'status' => 'belum_lunas',
           'tanggal_bayar' => null,

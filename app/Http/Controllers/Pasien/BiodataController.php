@@ -11,7 +11,9 @@ class BiodataController extends Controller
     public function detailPasien(Kunjungan $kunjungan)
     {
         // pastikan hanya pasien pemilik data
-        if ($kunjungan->pasien_id !== auth()->user()->pasien->id) {
+        $pasien = auth()->user()->pasien;
+
+        if (!$pasien || $kunjungan->pasien_id != $pasien->id) {
             abort(403);
         }
 

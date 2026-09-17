@@ -23,7 +23,7 @@
                         <div class="bg-white border-4 border-dashed border-green-200 rounded-2xl p-6 shadow-sm">
                             <div
                                 class="w-64 h-64 bg-white flex items-center justify-center text-6xl font-black text-green-600 border-2 border-gray-200 rounded-2xl">
-                                QR
+                                <img src="{{ asset('qr.png') }}" alt="QRIS" class="w-50 h-50">
                             </div>
                         </div>
                     </div>
@@ -66,6 +66,15 @@
                                 onclick="return confirm('Konfirmasi pasien sudah membayar via QRIS dan tagihan ini lunas?')"
                                 class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition shadow-sm">
                                 Konfirmasi Pembayaran QRIS Sudah Lunas
+                            </button>
+                        </form>
+
+                        <form action="{{ route('admin.pembayaran.ubahManual', $kunjungan->id) }}" method="POST">
+                            @csrf
+                            <button type="submit"
+                                onclick="return confirm('Ubah metode pembayaran pasien ini menjadi cash/manual?')"
+                                class="w-full bg-white hover:bg-gray-50 text-gray-800 border border-gray-300 font-bold py-3 rounded-xl transition shadow-sm">
+                                Ubah ke Pembayaran Cash
                             </button>
                         </form>
                     </div>

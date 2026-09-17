@@ -18,6 +18,9 @@ class DashboardController extends Controller
     $rawatJalan = Kunjungan::where('tipe', 'rawat_jalan')->whereDate('created_at', $today)->count();
     $rawatInap = Kunjungan::where('tipe', 'rawat_inap')->whereDate('created_at', $today)->count();
 
+    $pasienBaru = Pasien::whereDate('created_at', $today)->count();
+    $pasienLama = Pasien::whereDate('created_at', '<', $today)->count();
+
     // antrean hari ini, eager-load pasien->pengguna dan perawat
     $antreanHariIni = Kunjungan::with(['pasien.pengguna', 'perawat'])
       ->whereDate('created_at', $today)
@@ -37,6 +40,8 @@ class DashboardController extends Controller
       'totalKunjungan',
       'rawatJalan',
       'rawatInap',
+      'pasienBaru',
+      'pasienLama',
       'antreanHariIni',
       'menungguPembayaran'
     ));

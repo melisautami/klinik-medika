@@ -1,6 +1,6 @@
 <nav class="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
-    <div class="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
+    <div class="max-w-none mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between min-h-16">
 
             <div class="flex flex-1 overflow-hidden">
                 <div class="flex-shrink-0 flex items-center">
@@ -9,7 +9,7 @@
                     </span>
                 </div>
 
-                <div class="hidden sm:ml-8 sm:flex sm:space-x-4 lg:space-x-6 overflow-x-auto no-scrollbar">
+                <div class="hidden sm:ml-3 sm:flex sm:flex-1 sm:flex-wrap sm:items-center sm:gap-x-3 lg:gap-x-4 min-w-0">
 
                     @if (auth()->user()->role == 'admin')
                         <a href="{{ route('admin.dashboard') }}"
@@ -27,10 +27,10 @@
                             Pasien
                         </a>
 
-                        {{-- <a href="{{ route('admin.tarif.index') }}"
+                        <a href="{{ route('admin.tarif.index') }}"
                             class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold whitespace-nowrap transition-colors {{ request()->routeIs('admin.tarif.*') ? 'border-green-500 text-green-700' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-800' }}">
                             Katalog Tarif
-                        </a> --}}
+                        </a>
 
                         <a href="{{ route('admin.kunjungan.index') }}"
                             class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold whitespace-nowrap transition-colors {{ request()->routeIs('admin.kunjungan.*') ? 'border-green-500 text-green-700' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-800' }}">
@@ -40,6 +40,11 @@
                         <a href="{{ route('admin.pembayaran.index') }}"
                             class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold whitespace-nowrap transition-colors {{ request()->routeIs('admin.pembayaran.*') ? 'border-green-500 text-green-700' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-800' }}">
                             Konfirmasi Tagihan
+                        </a>
+
+                        <a href="{{ route('admin.pendaftaran.index') }}"
+                            class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold whitespace-nowrap transition-colors {{ request()->routeIs('admin.pendaftaran.*') ? 'border-green-500 text-green-700' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-800' }}">
+                            Pendaftaran Online
                         </a>
 
                         <a href="{{ route('admin.laporan.index') }}"
@@ -67,9 +72,15 @@
             </div>
 
             <div class="hidden sm:ml-6 sm:flex sm:items-center flex-shrink-0">
-                <span class="text-sm font-medium text-gray-700 mr-4">
-                    {{ auth()->user()->name ?? 'Pengguna' }}
-                </span>
+                @if (auth()->user()->role == 'admin')
+                    <span class="text-sm font-medium text-gray-700 mr-4">
+                        Petugas
+                    </span>
+                @else
+                    <span class="text-sm font-medium text-gray-700 mr-4">
+                        {{ auth()->user()->name ?? 'Pengguna' }}
+                    </span>
+                @endif
                 <form method="POST" action="{{ route('logout') }}" class="m-0">
                     @csrf
                     <button type="submit"
@@ -122,6 +133,10 @@
                 <a href="{{ route('admin.pembayaran.index') }}"
                     class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium {{ request()->routeIs('admin.pembayaran.*') ? 'bg-green-50 border-green-500 text-green-700' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800' }}">Konfirmasi
                     Tagihan</a>
+
+                <a href="{{ route('admin.pendaftaran.index') }}"
+                    class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium {{ request()->routeIs('admin.pendaftaran.*') ? 'bg-green-50 border-green-500 text-green-700' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800' }}">Pendaftaran
+                    Online</a>
 
                 <a href="{{ route('admin.laporan.index') }}"
                     class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium {{ request()->routeIs('admin.laporan.*') ? 'bg-green-50 border-green-500 text-green-700' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800' }}">Laporan</a>

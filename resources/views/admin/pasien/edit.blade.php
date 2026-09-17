@@ -59,6 +59,22 @@
                         @enderror
                     </div>
 
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Kata Sandi Baru</label>
+                        <input type="password" name="password" minlength="6" placeholder="Kosongkan jika tidak diubah"
+                            class="w-full rounded-lg border-gray-300 border p-3 text-sm focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none transition-shadow bg-gray-50 focus:bg-white" />
+                        @error('password')
+                            <p class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Konfirmasi Kata Sandi Baru</label>
+                        <input type="password" name="password_confirmation" minlength="6"
+                            placeholder="Ulangi kata sandi baru"
+                            class="w-full rounded-lg border-gray-300 border p-3 text-sm focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none transition-shadow bg-gray-50 focus:bg-white" />
+                    </div>
+
                     <!-- NIK (Half Width) -->
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1">Nomor Induk Kependudukan (NIK)</label>

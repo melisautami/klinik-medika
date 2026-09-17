@@ -36,6 +36,52 @@
         .summary {
             margin-top: 20px;
         }
+
+        /* Perbaikan: Blok kontainer digeser ke kanan menggunakan float atau margin-left: auto */
+        .signature-container {
+            float: right;
+            width: 250px;
+            margin-top: 40px;
+            text-align: center;
+            /* Membuat semua teks di dalamnya otomatis sejajar tengah */
+            page-break-inside: avoid;
+        }
+
+        .signature-date {
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+
+        .signature-title {
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Tempat tanda tangan fisik / space kosong */
+        .signature-space {
+            height: 70px;
+        }
+
+        /* Nama terang diberikan garis bawah (underline) sesuai standar surat resmi di gambar */
+        .signature-name {
+            font-size: 13px;
+            font-weight: bold;
+            text-decoration: underline;
+            margin-bottom: 4px;
+        }
+
+        .signature-nip {
+            font-size: 12px;
+        }
+
+        /* Clearfix untuk mengamankan layout setelah menggunakan float */
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
     </style>
 </head>
 
@@ -48,6 +94,8 @@
     </div>
 
     <div class="summary">
+        <p><strong>Total Rawat Jalan:</strong> {{ $rawatJalan }} Pasien</p>
+        <p><strong>Total Rawat Inap:</strong> {{ $rawatInap }} Pasien</p>
         <p><strong>Total Kunjungan:</strong> {{ $totalKunjungan }} Pasien</p>
         <p><strong>Total Pendapatan:</strong> Rp {{ number_format($totalPendapatan, 0, ',', '.') }}</p>
     </div>
@@ -74,6 +122,30 @@
             @endforeach
         </tbody>
     </table>
+
+    <!-- Pembungkus blok TTD menggunakan clearfix agar tata letak halaman di bawahnya tidak rusak -->
+    <div class="clearfix">
+        <div class="signature-container">
+            <div class="signature-date">
+                Lampung, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}
+            </div>
+
+            <div class="signature-title">
+                Bendahara Klinik Medika,
+            </div>
+
+            <!-- Space kosong untuk tempat tanda tangan tangan -->
+            <div class="signature-space"></div>
+
+            <div class="signature-name">
+                Susilowati Ningsih, A.Md.Fam
+            </div>
+
+            <div class="signature-nip">
+                SIP:503.440/035/SIP-TTK/429.111/2024
+            </div>
+        </div>
+    </div>
 
 </body>
 

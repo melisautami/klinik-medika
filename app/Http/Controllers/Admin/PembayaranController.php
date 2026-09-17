@@ -91,4 +91,25 @@ class PembayaranController extends Controller
 
     return view('admin.pembayaran.qris', compact('kunjungan', 'pembayaran'));
   }
+
+  public function ubahKeManual(Kunjungan $kunjungan)
+  {
+    $pembayaran = $kunjungan->pembayaran;
+
+    if (!$pembayaran) {
+      return redirect()->route('admin.pembayaran.index')
+        ->with('error', 'Tagihan pembayaran belum dibuat.');
+    }
+
+    if ($pembayaran->status === 'lunas') {
+      return back()->with('error', 'Pembayaran yang sudah lunas tidak dapat diubah metodenya.');
+    }
+
+    $pembayaran->update([
+      'metode_pembayaran' => 'manual',
+    ]);
+
+    return redirect()->route('admin.pembayaran.create', $kunjungan->id)
+      ->with('success', 'Metode pembayaran diubah menjadi cash/manual. Silakan lanjutkan pembayaran.');
+  }
 }

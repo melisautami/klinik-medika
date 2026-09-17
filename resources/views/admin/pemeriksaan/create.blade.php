@@ -62,7 +62,7 @@
                                 class="text-red-500">*</span></label>
 
                         <div class="mb-3">
-                            <input type="text" id="search_pasien_input" placeholder="Cari nama pasien..."
+                            <input type="text" id="search_pasien_input" placeholder="Cari nama atau NIK pasien..."
                                 class="w-full rounded-lg border-gray-300 border p-3 text-sm focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none transition-shadow bg-gray-50 focus:bg-white" />
                         </div>
 
@@ -76,13 +76,15 @@
                             @foreach ($pasiens as $p)
                                 <option value="{{ $p->id }}"
                                     data-nama="{{ strtolower($p->pengguna->name ?? 'pasien #' . $p->id) }}"
+                                    data-nik="{{ strtolower($p->nik ?? '') }}"
                                     {{ (string) $selectedId === (string) $p->id ? 'selected' : '' }}>
                                     {{ $p->pengguna->name ?? 'Pasien #' . $p->id }}
                                 </option>
                             @endforeach
                         </select>
 
-                        <p class="text-xs text-gray-500 mt-1">Cukup ketik nama pasien untuk memfilter daftar. Jika datang
+                        <p class="text-xs text-gray-500 mt-1">Cukup ketik nama atau NIK pasien untuk memfilter daftar. Jika
+                            datang
                             dari halaman detail pasien, pilihan akan otomatis terisi.</p>
 
                         @error('pasien_id')
@@ -182,9 +184,10 @@
                             return;
                         }
 
-                        const nama = (option.dataset.nama || option.textContent || '')
-                            .toLowerCase();
-                        const match = !keyword || nama.includes(keyword);
+                        const nama = (option.dataset.nama || '').toLowerCase();
+                        const nik = (option.dataset.nik || '').toLowerCase();
+                        const searchableText = `${nama} ${nik}`;
+                        const match = !keyword || searchableText.includes(keyword);
                         option.hidden = !match;
 
                         if (match && !firstVisible) {

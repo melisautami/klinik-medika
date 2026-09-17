@@ -56,6 +56,7 @@ class DashboardController extends Controller
 
             // Total kunjungan
             $totalKunjungan = (clone $query)->count();
+            $statusPasien = $totalKunjungan > 1 ? 'Pasien Lama' : 'Pasien Baru';
 
             // Pemeriksaan selesai
             $selesai = (clone $query)
@@ -75,6 +76,7 @@ class DashboardController extends Controller
 
             return view('pasien.dashboard', compact(
                 'totalKunjungan',
+                'statusPasien',
                 'selesai',
                 'menungguPembayaran',
                 'kunjungans'

@@ -9,6 +9,8 @@ use App\Http\Controllers\Admin\PasienController;
 use App\Http\Controllers\Admin\PerawatController;
 use App\Http\Controllers\Perawat\PendatangController;
 use App\Http\Controllers\Pasien\BiodataController;
+use App\Http\Controllers\Pasien\PendaftaranController as PasienPendaftaranController;
+use App\Http\Controllers\Admin\PendaftaranController as AdminPendaftaranController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -35,6 +37,7 @@ Route::prefix('petugas')->name('admin.')->middleware(['auth', 'role:admin'])->gr
     Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     // Manajemen pasien (CRUD)
+    Route::get('pasien-kategori/{kategori}', [PasienController::class, 'kategori'])->name('pasien.kategori');
     Route::resource('pasien', PasienController::class);
 
     //crud perawat
@@ -59,9 +62,15 @@ Route::prefix('petugas')->name('admin.')->middleware(['auth', 'role:admin'])->gr
     Route::get('kunjungan/{kunjungan}/pembayaran/create', [App\Http\Controllers\Admin\PembayaranController::class, 'create'])->name('pembayaran.create');
     Route::post('kunjungan/{kunjungan}/pembayaran', [App\Http\Controllers\Admin\PembayaranController::class, 'store'])->name('pembayaran.store');
     Route::get('kunjungan/{kunjungan}/pembayaran/qris', [App\Http\Controllers\Admin\PembayaranController::class, 'qris'])->name('pembayaran.qris');
+    Route::post('kunjungan/{kunjungan}/pembayaran/ubah-ke-manual', [App\Http\Controllers\Admin\PembayaranController::class, 'ubahKeManual'])->name('pembayaran.ubahManual');
     // Laporan
     Route::get('laporan', [App\Http\Controllers\Admin\LaporanController::class, 'index'])->name('laporan.index');
     Route::get('/laporan/pdf', [\App\Http\Controllers\Admin\LaporanController::class, 'cetakPdf'])->name('laporan.pdf');
+
+    // Pendaftaran online
+    Route::get('pendaftaran', [AdminPendaftaranController::class, 'index'])->name('pendaftaran.index');
+    Route::post('pendaftaran/{pendaftaran}/approve', [AdminPendaftaranController::class, 'approve'])->name('pendaftaran.approve');
+    Route::post('pendaftaran/{pendaftaran}/reject', [AdminPendaftaranController::class, 'reject'])->name('pendaftaran.reject');
 });
 //prefik untuk perawat routes
 Route::prefix('perawat')->name('perawat.')->middleware(['auth', 'role:perawat'])->group(function () {
@@ -95,4 +104,8 @@ Route::prefix('pasien')
 
         Route::get('/kunjungan/{kunjungan}/detail', [BiodataController::class, 'detailPasien'])
             ->name('detail');
+
+        Route::get('/pendaftaran', [PasienPendaftaranController::class, 'index'])->name('pendaftaran.index');
+        Route::get('/pendaftaran/create', [PasienPendaftaranController::class, 'create'])->name('pendaftaran.create');
+        Route::post('/pendaftaran', [PasienPendaftaranController::class, 'store'])->name('pendaftaran.store');
     });

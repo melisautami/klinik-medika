@@ -107,16 +107,6 @@
                             {{ $kunjungan->pembayaran->status == 'lunas' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                                 {{ $kunjungan->pembayaran->status == 'lunas' ? 'Lunas' : 'Belum Lunas' }}
                             </span>
-                            @if ($kunjungan->pembayaran->status === 'belum_lunas')
-                                <form action="{{ route('admin.konfirmasi.bayar', $kunjungan->id) }}" method="POST"
-                                    class="mt-3" onsubmit="return confirm('Konfirmasi pembayaran telah lunas?')">
-                                    @csrf
-                                    <button type="submit"
-                                        class="inline-flex items-center px-3 py-1.5 bg-green-600 text-white text-xs font-semibold rounded-md hover:bg-green-700 transition-colors">
-                                        Konfirmasi Lunas
-                                    </button>
-                                </form>
-                            @endif
                         </div>
                     @endif
                 </div>

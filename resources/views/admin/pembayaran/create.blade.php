@@ -87,8 +87,8 @@
                     <label class="block text-sm font-bold text-gray-700">Metode Pembayaran</label>
                     <select name="metode_pembayaran"
                         class="w-full rounded-lg border-gray-300 border p-3 text-sm focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none bg-white">
-                        <option value="qris" selected>QRIS</option>
-                        <option value="manual">Manual / Tunai</option>
+                        <option value="qris" >QRIS</option>
+                        <option value="manual" selected>Manual / Tunai</option>
                     </select>
                 </div>
 

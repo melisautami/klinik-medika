@@ -10,7 +10,7 @@
             <p class="text-sm text-gray-500 mt-1">Pantau antrean pasien dan aktivitas administrasi hari ini.</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
             <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 border-l-4 border-l-black">
                 <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Kunjungan Hari Ini</p>
                 <h3 class="text-3xl font-black text-gray-900">{{ $totalKunjungan ?? 0 }} <span
@@ -24,6 +24,18 @@
                 <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Rawat Inap</p>
                 <h3 class="text-3xl font-black text-gray-900">{{ $rawatInap ?? 0 }}</h3>
             </div>
+            <a href="{{ route('admin.pasien.kategori', 'baru') }}"
+                class="block bg-white rounded-xl p-6 shadow-sm border border-gray-100 border-l-4 border-l-blue-500 hover:shadow-md hover:border-blue-300 transition">
+                <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Pasien Baru</p>
+                <h3 class="text-3xl font-black text-gray-900">{{ $pasienBaru ?? 0 }}</h3>
+                <span class="mt-2 block text-xs font-semibold text-blue-600">Lihat daftar pasien baru</span>
+            </a>
+            <a href="{{ route('admin.pasien.kategori', 'lama') }}"
+                class="block bg-white rounded-xl p-6 shadow-sm border border-gray-100 border-l-4 border-l-yellow-500 hover:shadow-md hover:border-yellow-300 transition">
+                <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Pasien Lama</p>
+                <h3 class="text-3xl font-black text-gray-900">{{ $pasienLama ?? 0 }}</h3>
+                <span class="mt-2 block text-xs font-semibold text-yellow-600">Lihat daftar pasien lama</span>
+            </a>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">

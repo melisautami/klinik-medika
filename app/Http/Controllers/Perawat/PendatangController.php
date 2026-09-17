@@ -10,14 +10,40 @@ use Illuminate\Support\Facades\Auth;
 
 class PendatangController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $kunjungans = Kunjungan::with(['pasien.pengguna', 'perawat'])
-            ->whereIn('status', ['menunggu', 'diproses'])
-            ->orderBy('created_at', 'asc')
-            ->paginate(10);
+        $tab = in_array($request->input('tab'), ['rawat_jalan', 'rawat_inap'], true)
+            ? $request->input('tab')
+            : 'rawat_jalan';
 
-        return view('perawat.kunjungan.index', compact('kunjungans'));
+        $search = trim((string) $request->input('search', ''));
+
+        $query = Kunjungan::with(['pasien.pengguna', 'perawat'])
+            ->where('tipe', $tab)
+            ->where(function ($query) {
+                $query->where('status', 'menunggu')
+                    ->orWhere(function ($query) {
+                        $query->where('status', 'diproses')
+                            ->where('perawat_id', Auth::id());
+                    });
+            });
+
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('pasien.pengguna', function ($subQuery) use ($search) {
+                    $subQuery->where('name', 'like', '%' . $search . '%');
+                })->orWhereHas('pasien', function ($subQuery) use ($search) {
+                    $subQuery->where('nik', 'like', '%' . $search . '%');
+                });
+            });
+        }
+
+        $kunjungans = $query
+            ->orderBy('created_at', 'asc')
+            ->paginate(10)
+            ->appends(['tab' => $tab, 'search' => $search]);
+
+        return view('perawat.kunjungan.index', compact('kunjungans', 'tab', 'search'));
     }
     /**
      * 🔥 Ambil pasien
@@ -43,11 +69,13 @@ class PendatangController extends Controller
     public function show(Kunjungan $kunjungan)
     {
         // pastikan hanya perawat yang mengambil yang bisa akses
-        if ($kunjungan->perawat_id !== Auth::id()) {
+        if ($kunjungan->perawat_id != Auth::id()) {
             abort(403);
         }
 
-        return view('perawat.kunjungan.show', compact('kunjungan'));
+        $tarifs = Tarif::orderBy('nama_tindakan')->get();
+
+        return view('perawat.kunjungan.show', compact('kunjungan', 'tarifs'));
     }
 
     /**
@@ -56,7 +84,7 @@ class PendatangController extends Controller
     public function rekamMedis(Request $request, Kunjungan $kunjungan)
     {
         // keamanan
-        if ($kunjungan->perawat_id !== Auth::id()) {
+        if ((int) $kunjungan->perawat_id !== (int) Auth::id()) {
             abort(403);
         }
 
@@ -64,13 +92,15 @@ class PendatangController extends Controller
         $request->validate([
             'keluhan'   => 'required|string',
             'diagnosa'  => 'required|string',
-            'tindakan'  => 'required|string',
+            'tindakan'  => 'nullable|string',
             'tarif_ids' => 'nullable|array',
             'tarif_ids.*' => 'exists:tarifs,id',
         ]);
 
         $tindakanText = Kunjungan::normalizeTindakanText($request->tindakan);
-        if ($tindakanText === '') {
+        $tarifIds = array_values(array_unique(array_map('intval', $request->input('tarif_ids', []))));
+
+        if ($tindakanText === '' && empty($tarifIds)) {
             return back()->withErrors(['tindakan' => 'Isi minimal satu tindakan medik dan harga.'])->withInput();
         }
 
@@ -78,7 +108,7 @@ class PendatangController extends Controller
         $kunjungan->keluhan  = $request->keluhan;
         $kunjungan->diagnosa = $request->diagnosa;
         $kunjungan->tindakan = $tindakanText;
-        $kunjungan->tarif_ids = array_values(array_unique($request->input('tarif_ids', [])));
+        $kunjungan->tarif_ids = $tarifIds;
         $kunjungan->status   = 'selesai_diperiksa';
         $kunjungan->save();
 
@@ -133,7 +163,7 @@ class PendatangController extends Controller
     public function detail(Kunjungan $kunjungan)
     {
         // hanya perawat yang menangani pasien ini
-        if ($kunjungan->perawat_id !== Auth::id()) {
+        if ((int) $kunjungan->perawat_id !== (int) Auth::id()) {
             abort(403);
         }
 
