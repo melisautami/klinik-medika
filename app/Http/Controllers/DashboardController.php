@@ -17,7 +17,7 @@ class DashboardController extends Controller
         } elseif ($user->role === 'perawat') {
             $perawatId = Auth::id();
 
-            // Total pasien yang pernah ditangani perawat ini
+            // Total pasien yang pernah ditangani perawat 
             $totalKunjungan = Kunjungan::where('perawat_id', $perawatId)
                 ->count();
 
